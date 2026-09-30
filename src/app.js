@@ -247,6 +247,16 @@ Acta.App = (function () {
     window.addEventListener('pagehide', flush);
     document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') flush(); });
     route();
+    registerSW();
+  }
+
+  function registerSW() {
+    try {
+      const secure = location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+      if ('serviceWorker' in navigator && window.top === window.self && secure) {
+        navigator.serviceWorker.register('sw.js').catch(() => {});
+      }
+    } catch (e) { /* sin service worker: la app funciona igual con conexión */ }
   }
 
   return { start };

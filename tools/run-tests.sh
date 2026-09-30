@@ -14,7 +14,7 @@ PROFILE="$(cygpath -w "$(mktemp -d)")"
   "http://127.0.0.1:$PORT/tests/tests.html?report=1" >/dev/null 2>&1 &
 BR=$!
 for i in $(seq 1 120); do [ -s "$OUT" ] && break; sleep 0.5; done
-kill $BR $SRV 2>/dev/null; taskkill //F //T //PID $BR >/dev/null 2>&1
+kill $SRV 2>/dev/null; powershell -NoProfile -ExecutionPolicy Bypass -File tools/kill-headless.ps1 -Profile "$PROFILE" >/dev/null 2>&1
 [ -s "$OUT" ] || { echo "sin resultados (timeout)"; exit 1; }
 grep '^FAIL' "$OUT"
 SUMMARY=$(tail -n 1 "$OUT")

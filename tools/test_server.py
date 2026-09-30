@@ -4,6 +4,7 @@ import http.server, os, sys, threading
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PORT = int(sys.argv[1]) if len(sys.argv) > 1 else 8765
 OUT = sys.argv[2] if len(sys.argv) > 2 else os.path.join(ROOT, '.superpowers', 'test-results.txt')
+OFFLINE = len(sys.argv) > 3 and sys.argv[3] == 'offline'  # simula servidor caído: todo GET responde 503
 
 
 class Handler(http.server.SimpleHTTPRequestHandler):
@@ -12,6 +13,12 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 
     def log_message(self, *a):
         pass
+
+    def do_GET(self):
+        if OFFLINE:
+            self.send_error(503)
+            return
+        super().do_GET()
 
     def do_POST(self):
         if self.path != '/__results':

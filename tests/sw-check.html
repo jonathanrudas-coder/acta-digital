@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="utf-8">
+<title>Prueba sin conexión</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../styles/olibia-tokens.css">
+<link rel="stylesheet" href="../styles/app.css">
+<link rel="stylesheet" href="../styles/sheet.css">
+</head>
+<body>
+<div id="box"></div>
+<script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js"></script>
+<script src="../src/model.js"></script>
+<script src="../src/lists.js"></script>
+<script src="../src/catalog.js"></script>
+<script src="../src/rules.js"></script>
+<script src="../src/sheets.js"></script>
+<script src="../src/export.js"></script>
+<script src="fixtures.js"></script>
+<script>
+/* Fase 1: instala el service worker y deja todo en caché. Fase 2 (servidor caído): comprueba que la app
+   y las librerías salen de la caché y que se puede generar una imagen. */
+const phase = new URLSearchParams(location.search).get('phase');
+const report = lines => fetch('/__results', { method: 'POST', body: lines.join('\n') });
+const LOCAL = ['/', '/index.html', '/manifest.webmanifest', '/sw.js', '/styles/app.css', '/src/app.js', '/src/form.js', '/icons/icon-192.png'];
+(async () => {
+  const out = [];
+  try {
+    if (phase === '1') {
+      await navigator.serviceWorker.register('/sw.js', { scope: '/' });
+      await navigator.serviceWorker.ready;
+      const c = await caches.open('acta-v1');
+      await c.addAll(['/tests/sw-check.html', '/tests/fixtures.js']); // solo para esta prueba
+      out.push('cache entries: ' + (await c.keys()).length);
+      out.push('RESULT ok');
+    } else {
+      out.push('controlled: ' + !!navigator.serviceWorker.controller);
+      let bad = 0;
+      for (const u of LOCAL) { const r = await fetch(u); if (!r.ok) { bad++; out.push('FAIL ' + u + ' ' + r.status); } }
+      out.push('local ok: ' + (LOCAL.length - bad) + '/' + LOCAL.length);
+      const [node] = Acta.Sheets.render(Acta.Sheets.model(Fx.directa()));
+      document.getElementById('box').appendChild(node);
+      const blob = await Acta.Export.toBlob(node, 'png');
+      out.push('png bytes: ' + blob.size);
+      out.push(navigator.serviceWorker.controller && !bad && blob.size > 10000 ? 'RESULT ok' : 'RESULT fail');
+    }
+  } catch (e) { out.push('RESULT fail ' + e.message); }
+  report(out);
+})();
+</script>
+</body>
+</html>
