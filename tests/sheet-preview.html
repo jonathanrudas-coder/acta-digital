@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="utf-8">
+<title>Vista previa de hojas</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../styles/olibia-tokens.css">
+<link rel="stylesheet" href="../styles/app.css">
+<link rel="stylesheet" href="../styles/sheet.css">
+<style>body { margin: 0; background: #999; } #box { display: grid; gap: 24px; width: 1080px; }</style>
+</head>
+<body>
+<div id="box"></div>
+<script src="../src/model.js"></script>
+<script src="../src/lists.js"></script>
+<script src="../src/catalog.js"></script>
+<script src="../src/rules.js"></script>
+<script src="../src/sheets.js"></script>
+<script src="fixtures.js"></script>
+<script>
+  /* ?sheet=1|2 muestra una sola hoja; ?largo=1 añade observación de 2000 caracteres sin espacios. */
+  const q = new URLSearchParams(location.search);
+  const a = Fx.indirecta();
+  if (q.get('largo')) Acta.Model.set(a, 'obs.texto', 'SERIE' + 'x'.repeat(1995));
+  Acta.Model.set(a, 'riesgo.q9', 'Sí');
+  Acta.Model.set(a, 'celda.enCelda', 'Sí'); Acta.Model.set(a, 'celda.estado', 'Malo');
+  Acta.Model.set(a, 'serv.interes', ['Paneles solares', 'Carga vehicular SVG']);
+  a.tables.maquinasList = [{ tipo: 'Horno', potenciaKw: '12', cantidad: '2' }];
+  Acta.Model.setCell(a, 'pruebasFase', 'R', 'voltaje', '120'); Acta.Model.setCell(a, 'pruebasFase', 'R', 'corriente', '15,2');
+  Acta.Model.setCell(a, 'sellosMed', 'Cubierta principal · 1', 'serial', 'BIA 10001');
+  Acta.Model.setCell(a, 'sellosMed', 'Cubierta principal · 1', 'color', 'Verde');
+  const c = document.createElement('canvas'); c.width = 600; c.height = 400;
+  const x = c.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, 600, 400); x.lineWidth = 4;
+  x.strokeRect(50, 50, 500, 300); x.beginPath(); x.moveTo(50, 200); x.lineTo(550, 200); x.stroke();
+  a.images['unifilar.dibujo'] = c.toDataURL('image/png');
+  const nodes = Acta.Sheets.render(Acta.Sheets.model(a));
+  const only = q.get('sheet');
+  nodes.forEach((n, i) => { if (!only || String(i + 1) === only) document.getElementById('box').appendChild(n); });
+</script>
+</body>
+</html>

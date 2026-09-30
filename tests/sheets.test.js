@@ -44,3 +44,9 @@ test('firmas en hoja 2', () => {
   assert.deepEqual(sig.items.map(i => i.role), ['Usuario / Testigo', 'BIA']);
 });
 })();
+test('lista de máquinas omite columnas vacías', () => {
+  const a = Fx.directa(); a.tables.maquinasList = [{ tipo: 'Horno', cantidad: '2' }, {}];
+  const b = Acta.Sheets.model(a)[1].sections.find(s => s.id === 'maquinas').blocks[0];
+  assert.deepEqual(b.columns, ['Tipo de máquina', 'Cantidad']);
+  assert.deepEqual(b.rows, [['Horno', '2']]);
+});

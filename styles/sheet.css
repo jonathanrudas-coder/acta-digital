@@ -1,1 +1,52 @@
-/* Hojas del resumen (Task 9) */
+/* Hojas del resumen generado (1080 px de ancho, siempre en claro). */
+.sheet {
+  width: 1080px; box-sizing: border-box; padding: 48px; display: flex; flex-direction: column; gap: 20px;
+  background: var(--color-bg-weak-25); color: var(--color-text-strong-950);
+  font-family: var(--font-sans); font-size: 15px; line-height: 22px;
+}
+.sheet * { box-sizing: border-box; }
+.s-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; }
+.s-brand { display: flex; gap: 16px; align-items: center; }
+.s-brand svg { flex: none; }
+.s-eyebrow { font-size: 12px; line-height: 16px; letter-spacing: .06em; text-transform: uppercase; font-weight: 500; color: var(--color-text-soft-400); }
+.s-titles h1 { font-family: var(--font-display); font-weight: 500; font-size: 28px; line-height: 34px; margin: 2px 0 0; }
+.s-meta { text-align: right; font-size: 14px; line-height: 20px; color: var(--color-text-sub-600); }
+.s-acta { font-family: var(--font-display); font-weight: 500; font-size: 22px; line-height: 28px; color: var(--color-text-strong-950); }
+.s-page { margin-top: 4px; font-weight: 500; }
+.s-disclaimer { margin: -8px 0 0; font-size: 13px; color: var(--color-text-soft-400); }
+
+.s-card { background: var(--color-bg-white-0); border-radius: 16px; box-shadow: var(--shadow-card); padding: 20px 24px; display: flex; flex-direction: column; gap: 16px; }
+.s-title { margin: 0; font-size: 12px; line-height: 16px; letter-spacing: .08em; text-transform: uppercase; font-weight: 500; color: var(--color-text-sub-600); font-family: var(--font-sans); }
+
+.s-pairs { display: grid; grid-template-columns: 1fr 1fr; gap: 0 32px; margin: 0; }
+.s-pair { display: flex; flex-direction: column; gap: 2px; padding: 10px 0; border-top: 1px solid var(--color-stroke-soft-200); min-width: 0; }
+.s-pair:nth-child(-n+2) { border-top: 0; padding-top: 0; }
+.s-pair.is-wide { grid-column: 1 / -1; }
+.s-pair dt { font-size: 13px; line-height: 18px; color: var(--color-text-sub-600); }
+.s-pair dd { margin: 0; font-size: 15px; line-height: 22px; color: var(--color-text-strong-950); overflow-wrap: anywhere; white-space: pre-wrap; }
+.s-pair.is-risk { background: var(--color-warning-lighter); margin: 0 -12px; padding-left: 12px; padding-right: 12px; border-radius: 8px; border-top-color: transparent; }
+.s-pair .o-badge { font-size: 13px; }
+
+.s-table-title { font-size: 13px; color: var(--color-text-sub-600); margin-bottom: 6px; }
+.s-table table { width: 100%; border-collapse: collapse; font-size: 13px; line-height: 18px; table-layout: auto; }
+.s-table th, .s-table td { padding: 7px 8px; text-align: left; vertical-align: top; overflow-wrap: anywhere; border-bottom: 1px solid var(--color-stroke-soft-200); }
+.s-table thead th { background: var(--color-bg-weak-50); color: var(--color-text-sub-600); font-weight: 500; }
+.s-table thead th:first-child { border-top-left-radius: 8px; }
+.s-table thead th:last-child { border-top-right-radius: 8px; }
+.s-table .s-rowhead { font-weight: 500; color: var(--color-text-strong-950); white-space: nowrap; }
+
+.s-images { display: grid; gap: 16px; }
+.s-images figure { margin: 0; }
+.s-images img { display: block; max-width: 100%; max-height: 900px; margin: 0 auto; border-radius: 10px; box-shadow: inset 0 0 0 1px var(--color-stroke-soft-200); background: #fff; }
+.s-images figcaption { margin-top: 6px; font-size: 13px; color: var(--color-text-sub-600); text-align: center; }
+
+.s-signs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.s-sign { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.s-sign-img { height: 120px; border-radius: 10px; background: #fff; box-shadow: inset 0 0 0 1px var(--color-stroke-soft-200); display: grid; place-items: center; overflow: hidden; }
+.s-sign-img img { max-width: 100%; max-height: 100%; }
+.s-sign-role { margin-top: 6px; font-weight: 500; }
+.s-sign-line { font-size: 13px; color: var(--color-text-strong-950); overflow-wrap: anywhere; }
+.s-sign-line span { color: var(--color-text-sub-600); }
+
+.s-empty { margin: 0; color: var(--color-text-soft-400); }
+.s-law { margin: 0; font-size: 12px; line-height: 17px; color: var(--color-text-soft-400); }
