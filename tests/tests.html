@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="utf-8">
+<title>Pruebas</title>
+<link rel="stylesheet" href="../styles/olibia-tokens.css">
+<link rel="stylesheet" href="../styles/app.css">
+<link rel="stylesheet" href="../styles/sheet.css">
+<style>body{padding:16px;font:13px monospace}.fail{color:#c00}</style>
+</head>
+<body>
+<div id="summary">corriendo…</div>
+<ol id="results"></ol>
+<script src="harness.js"></script>
+<script src="../src/model.js"></script>
+<script src="../src/lists.js"></script>
+<script src="../src/catalog.js"></script>
+<script src="../src/rules.js"></script>
+<script src="../src/validate.js"></script>
+<script src="../src/sheets.js"></script>
+<script src="../src/store.js"></script>
+<script src="model.test.js"></script>
+<script>
+window.addEventListener('load', function () {
+  runTests().catch(function (e) { document.getElementById('summary').textContent = 'harness error: ' + e.message; });
+});
+</script>
+</body>
+</html>

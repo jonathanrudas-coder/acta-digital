@@ -1,0 +1,1 @@
+window.Acta = window.Acta || {};
