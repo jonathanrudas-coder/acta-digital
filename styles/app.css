@@ -11,3 +11,125 @@ body {
 h1, h2, h3 { font-family: var(--font-display); font-weight: 500; margin: 0; }
 img { max-width: 100%; }
 [hidden] { display: none !important; }
+
+/* ───────── Componentes Olibia (recreación con tokens semánticos) ───────── */
+:root {
+  --ctl-h: 44px;
+  --ring: inset 0 0 0 1px var(--color-stroke-soft-200);
+  --focus: 0 0 0 2px var(--color-bg-white-0), 0 0 0 4px var(--color-stroke-strong-950);
+}
+.o-card { background: var(--color-bg-white-0); border-radius: var(--radius-16); box-shadow: var(--shadow-card); }
+.o-sub { font-size: 11px; line-height: 16px; letter-spacing: .06em; text-transform: uppercase; font-weight: 500; color: var(--color-text-soft-400); }
+.o-label { display: block; font-size: 13px; line-height: 18px; font-weight: 500; color: var(--color-text-strong-950); margin-bottom: 6px; }
+.o-label.is-required::after { content: " *"; color: var(--color-error-base); }
+
+.o-input, .o-select, .o-textarea {
+  width: 100%; min-height: var(--ctl-h); padding: 10px 12px; border: 0; border-radius: var(--radius-10);
+  background: var(--color-bg-white-0); color: var(--color-text-strong-950); font: 400 15px/20px var(--font-sans);
+  box-shadow: var(--ring), var(--shadow-regular-xs);
+  transition: box-shadow 200ms var(--ease-bia), background 200ms var(--ease-bia);
+  -webkit-appearance: none; appearance: none;
+}
+.o-input::placeholder, .o-textarea::placeholder { color: var(--color-text-soft-400); }
+.o-input:hover, .o-select:hover, .o-textarea:hover { background: var(--color-bg-weak-50); }
+.o-input:focus, .o-select:focus, .o-textarea:focus {
+  outline: none; background: var(--color-bg-white-0);
+  box-shadow: inset 0 0 0 1px var(--color-stroke-strong-950), var(--focus);
+}
+.o-input[readonly] { background: var(--color-bg-weak-50); color: var(--color-text-sub-600); }
+.o-textarea { min-height: 120px; resize: vertical; }
+.o-select {
+  padding-right: 36px;
+  background-image: linear-gradient(45deg, transparent 50%, var(--color-text-sub-600) 50%), linear-gradient(135deg, var(--color-text-sub-600) 50%, transparent 50%);
+  background-position: calc(100% - 18px) 20px, calc(100% - 13px) 20px; background-size: 5px 5px; background-repeat: no-repeat;
+}
+.o-hint { display: flex; gap: 4px; align-items: center; margin-top: 6px; font-size: 12px; line-height: 16px; color: var(--color-text-sub-600); }
+.o-hint.is-error { color: var(--color-error-base); }
+
+/* SegmentedControl: pill blanca sobre fondo gris */
+.o-seg { display: flex; gap: 2px; padding: 3px; border-radius: var(--radius-10); background: var(--color-bg-weak-50); box-shadow: var(--ring); flex-wrap: wrap; }
+.o-seg button {
+  flex: 1 1 0; min-width: 64px; min-height: 38px; border: 0; border-radius: var(--radius-8); background: transparent;
+  color: var(--color-text-sub-600); font: 500 14px/18px var(--font-sans); padding: 8px 10px; cursor: pointer;
+  transition: background 200ms var(--ease-bia), color 200ms var(--ease-bia), box-shadow 200ms var(--ease-bia);
+}
+.o-seg button:hover { color: var(--color-text-strong-950); }
+.o-seg button[aria-pressed="true"] { background: var(--color-bg-white-0); color: var(--color-text-strong-950); box-shadow: var(--shadow-regular-xs), var(--ring); }
+.o-seg button:focus-visible { outline: none; box-shadow: var(--focus); }
+
+/* Checkbox: teal solo cuando está marcado */
+.o-check { display: flex; align-items: center; gap: 10px; min-height: var(--ctl-h); font-size: 14px; cursor: pointer; }
+.o-check input {
+  appearance: none; -webkit-appearance: none; width: 20px; height: 20px; margin: 0; border-radius: var(--radius-6);
+  background: var(--color-bg-white-0); box-shadow: inset 0 0 0 1.5px var(--color-stroke-sub-300);
+  display: grid; place-content: center; flex: none; cursor: pointer;
+}
+.o-check input:checked { background: var(--color-brand-base); box-shadow: none; }
+.o-check input:checked::after {
+  content: ""; width: 10px; height: 6px; border: 2px solid var(--color-static-white);
+  border-top: 0; border-right: 0; transform: rotate(-45deg) translate(1px, -1px);
+}
+.o-check input:focus-visible { outline: none; box-shadow: var(--focus); }
+
+/* Botones */
+.o-btn, .o-btn-fancy, .o-btn-compact {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: var(--ctl-h); padding: 10px 16px;
+  border: 0; border-radius: var(--radius-10); font: 500 14px/20px var(--font-sans); cursor: pointer; text-decoration: none;
+  transition: background 200ms var(--ease-bia), box-shadow 200ms var(--ease-bia), transform 150ms var(--ease-bia);
+}
+.o-btn { background: var(--color-bg-white-0); color: var(--color-text-sub-600); box-shadow: var(--ring), var(--shadow-regular-xs); }
+.o-btn:hover { background: var(--color-bg-weak-50); color: var(--color-text-strong-950); }
+.o-btn-fancy {
+  background: var(--color-bg-strong-950); color: var(--color-text-white-0);
+  box-shadow: 0 0 0 1px var(--color-bg-strong-950), 0 1px 2px rgba(23, 23, 23, .24), inset 0 1px 0 rgba(255, 255, 255, .16);
+}
+.o-btn-fancy:hover { background: var(--color-bg-surface-800); }
+.o-btn-compact { min-height: 36px; min-width: 36px; padding: 6px; background: transparent; color: var(--color-text-sub-600); }
+.o-btn-compact:hover { background: var(--color-bg-weak-50); color: var(--color-text-strong-950); }
+.o-btn:active, .o-btn-fancy:active { transform: scale(.98); }
+.o-btn:focus-visible, .o-btn-fancy:focus-visible, .o-btn-compact:focus-visible { outline: none; box-shadow: var(--focus); }
+.o-btn[disabled], .o-btn-fancy[disabled] { background: var(--color-bg-weak-50); color: var(--color-text-disabled-300); box-shadow: none; cursor: default; }
+.o-btn.is-error { color: var(--color-error-base); }
+.o-btn i, .o-btn-fancy i, .o-btn-compact i { font-size: 18px; line-height: 1; }
+.o-link {
+  background: none; border: 0; padding: 0; color: var(--color-brand-base); font: 500 14px/20px var(--font-sans);
+  cursor: pointer; text-decoration: underline; text-underline-offset: 3px;
+}
+.is-loading { position: relative; color: transparent !important; pointer-events: none; }
+.is-loading::after {
+  content: ""; position: absolute; width: 16px; height: 16px; border-radius: 50%; border: 2px solid;
+  border-color: var(--color-text-white-0) transparent var(--color-text-white-0) transparent; animation: o-spin 700ms linear infinite;
+}
+@keyframes o-spin { to { transform: rotate(360deg); } }
+
+/* Badges, alertas, progreso */
+.o-badge {
+  display: inline-flex; align-items: center; gap: 6px; padding: 2px 8px; border-radius: 999px; font: 500 12px/18px var(--font-sans);
+  background: var(--color-bg-weak-50); color: var(--color-text-sub-600); box-shadow: var(--ring);
+}
+.o-badge::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.o-badge.is-ok { color: var(--color-success-base); background: var(--color-success-lighter); box-shadow: none; }
+.o-badge.is-warn { color: var(--color-warning-base); background: var(--color-warning-lighter); box-shadow: none; }
+.o-badge.is-error { color: var(--color-error-base); background: var(--color-error-lighter); box-shadow: none; }
+.o-alert {
+  display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px; border-radius: var(--radius-12);
+  background: var(--color-information-lighter); color: var(--color-text-strong-950); font-size: 14px; line-height: 20px;
+}
+.o-alert i { font-size: 18px; color: var(--color-information-base); }
+.o-alert.is-warning { background: var(--color-warning-lighter); }
+.o-alert.is-warning i { color: var(--color-warning-base); }
+.o-alert .o-alert-body { flex: 1; min-width: 0; }
+.o-progress { height: 6px; border-radius: 999px; background: var(--color-bg-soft-200); overflow: hidden; }
+.o-progress > span { display: block; height: 100%; background: var(--color-brand-base); border-radius: inherit; transition: width 300ms var(--ease-bia); }
+
+/* Lienzos de firma y dibujo (fondo blanco también en tema oscuro, como el papel) */
+canvas.o-pad { display: block; width: 100%; height: 160px; border-radius: var(--radius-10); background: #ffffff; box-shadow: var(--ring); cursor: crosshair; }
+canvas.o-pad.is-grid {
+  height: auto; aspect-ratio: 1 / 1;
+  background-image: linear-gradient(#e5e5e5 1px, transparent 1px), linear-gradient(90deg, #e5e5e5 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}

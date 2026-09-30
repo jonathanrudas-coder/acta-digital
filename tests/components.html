@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Componentes</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.6.0/fonts/remixicon.css">
+<link rel="stylesheet" href="../styles/olibia-tokens.css">
+<link rel="stylesheet" href="../styles/app.css">
+<style>
+  .demo { padding: 16px; display: grid; gap: 16px; }
+  .demo .o-card { padding: 16px; display: grid; gap: 14px; }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; }
+</style>
+</head>
+<body>
+<div class="demo">
+  <button class="o-btn" id="theme">Cambiar tema</button>
+  <div class="o-card">
+    <div class="o-sub">Información comercial</div>
+    <h2>Nombre de sección</h2>
+    <div><label class="o-label is-required">Nombre de la cuenta</label><input class="o-input" placeholder="Escribe aquí"></div>
+    <div><label class="o-label">Operador de red</label><select class="o-select"><option>Air-e</option><option>EPM</option></select></div>
+    <div><label class="o-label">¿Hay riesgo de atrapamiento?</label>
+      <div class="o-seg"><button aria-pressed="true">Sí</button><button aria-pressed="false">No</button></div></div>
+    <div><label class="o-label">Tipo de medida</label>
+      <div class="o-seg"><button>Directa</button><button aria-pressed="true">Semidirecta</button><button>Indirecta</button></div></div>
+    <label class="o-check"><input type="checkbox" checked> Paneles solares</label>
+    <label class="o-check"><input type="checkbox"> Carga vehicular</label>
+    <div><label class="o-label">Observaciones</label><textarea class="o-textarea"></textarea>
+      <div class="o-hint is-error"><i class="ri-error-warning-line"></i>Campo obligatorio</div></div>
+    <canvas class="o-pad"></canvas>
+    <div class="row"><span class="o-badge is-ok">Sí</span><span class="o-badge is-warn">Riesgo</span><span class="o-badge is-error">No</span><span class="o-badge">Borrador</span></div>
+    <div class="o-alert"><i class="ri-information-line"></i><div class="o-alert-body">Elige el tipo de medida para ver solo las secciones que aplican.</div></div>
+    <div class="o-alert is-warning"><i class="ri-alert-line"></i><div class="o-alert-body">La lectura final es menor que la inicial.</div></div>
+    <div class="o-progress"><span style="width:60%"></span></div>
+    <div class="row">
+      <button class="o-btn-fancy">Revisar y generar</button>
+      <button class="o-btn"><i class="ri-map-pin-line"></i>Capturar ubicación</button>
+      <button class="o-btn-compact" aria-label="Cerrar"><i class="ri-close-line"></i></button>
+      <button class="o-link">Ver detalle</button>
+    </div>
+  </div>
+</div>
+<script>
+  document.getElementById('theme').onclick = function () {
+    var r = document.documentElement; r.dataset.theme = r.dataset.theme === 'dark' ? 'light' : 'dark';
+  };
+</script>
+</body>
+</html>
