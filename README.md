@@ -70,7 +70,7 @@ Páginas de apoyo: `tests/components.html` (componentes Olibia en claro/oscuro) 
 | `src/sheets.js`, `styles/sheet.css` | Contenido y diseño de las imágenes |
 | `src/form.js`, `src/app.js`, `styles/app.css` | Formulario y pantallas |
 | `src/store.js`, `src/capture.js`, `src/export.js` | Guardado local, GPS/firmas/fotos, exportación |
-| `styles/olibia-tokens.css`, `styles/fonts/` | Tokens y fuente Season Mix del design system Olibia (copia literal) |
+| `styles/olibia-tokens.css` | Tokens del design system Olibia (copia; los títulos usan Inter en vez de Season Mix) |
 | `sw.js`, `manifest.webmanifest`, `icons/` | App instalable y sin conexión |
 
 Al publicar una versión nueva, cambia `CACHE` en `sw.js` (`acta-v2`, `acta-v3`, …) para que los
@@ -78,6 +78,6 @@ dispositivos reciban los archivos actualizados.
 
 ## Pendientes conocidos
 
-- **Season Mix es una fuente TRIAL.** Sirve para uso interno; antes de distribuir la app más
-  ampliamente, reemplázala por los archivos con licencia o usa Inter en los títulos.
+- La fuente de títulos de Olibia (Season Mix) no se incluye porque solo se tenía la versión TRIAL;
+  los títulos usan Inter. Si BIA obtiene la licencia, se puede volver a agregar.
 - Las listas de autocompletar son sugerencias armadas con información pública; no son oficiales.
