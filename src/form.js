@@ -25,13 +25,17 @@ Acta.Form = (function () {
   function mount(root, acta, opts) {
     const onChange = (opts && opts.onChange) || function () {};
     const updaters = [];
+    let sink = updaters; // los controles registran su update aquí; las filas de listas usan su propio arreglo
     const pads = [];
     const datalists = {};
     root.innerHTML = '';
     const wrap = h('div', { class: 'f-wrap' });
     root.appendChild(wrap);
 
-    function changed() { refreshVisibility(); updaters.forEach(u => u()); onChange(acta); }
+    function changed() {
+      if (acta.status === 'generada') acta.status = 'borrador';
+      refreshVisibility(); updaters.forEach(u => u()); onChange(acta);
+    }
 
     // ── accesores ──
     const topAcc = id => ({ get: () => M().get(acta, id), set: v => M().set(acta, id, v) });
@@ -59,7 +63,7 @@ Acta.Form = (function () {
         acc.set(acc.get() === o ? '' : o); changed();
       } }));
       btns.forEach(b => box.appendChild(b));
-      updaters.push(() => btns.forEach(b => b.setAttribute('aria-pressed', String(acc.get() === b.textContent))));
+      sink.push(() => btns.forEach(b => b.setAttribute('aria-pressed', String(acc.get() === b.textContent))));
       return box;
     }
 
@@ -69,7 +73,7 @@ Acta.Form = (function () {
       if (t === 'choice') {
         const sel = h('select', { class: 'o-select', id: inputId, onchange: e => { acc.set(e.target.value); changed(); } },
           [h('option', { value: '', text: 'Selecciona…' })].concat(field.options.map(o => h('option', { value: o, text: o }))));
-        updaters.push(() => { sel.value = acc.get() || ''; });
+        sink.push(() => { sel.value = acc.get() || ''; });
         return sel;
       }
       if (t === 'multi') {
@@ -80,19 +84,19 @@ Acta.Form = (function () {
             if (cb.checked) cur.push(o);
             acc.set(cur); changed();
           } });
-          updaters.push(() => { cb.checked = (acc.get() || []).indexOf(o) !== -1; });
+          sink.push(() => { cb.checked = (acc.get() || []).indexOf(o) !== -1; });
           box.appendChild(h('label', { class: 'o-check' }, [cb, o]));
         });
         return box;
       }
       if (t === 'textarea') {
         const ta = h('textarea', { class: 'o-textarea', id: inputId, oninput: e => { acc.set(e.target.value); changed(); } });
-        updaters.push(() => { if (document.activeElement !== ta) ta.value = acc.get() || ''; });
+        sink.push(() => { if (document.activeElement !== ta) ta.value = acc.get() || ''; });
         return ta;
       }
       if (t === 'computed' || t === 'mirror') {
         const ro = h('input', { class: 'o-input', id: inputId, readonly: true, tabindex: '-1' });
-        updaters.push(() => { ro.value = Acta.Sheets.display(field, acta) || '—'; });
+        sink.push(() => { ro.value = Acta.Sheets.display(field, acta) || '—'; });
         return ro;
       }
       // text, number, date, time, suggest
@@ -108,7 +112,7 @@ Acta.Form = (function () {
           }
         }
       });
-      updaters.push(() => { if (document.activeElement !== inp) inp.value = acc.get() || ''; });
+      sink.push(() => { if (document.activeElement !== inp) inp.value = acc.get() || ''; });
       return inp;
     }
 
@@ -194,8 +198,12 @@ Acta.Form = (function () {
     function listField(field) {
       const rowsBox = h('div', { class: 'f-list' });
       const data = () => (acta.tables[field.id] = acta.tables[field.id] || []);
+      let rowUpdaters = [];
+      updaters.push(() => rowUpdaters.forEach(u => u()));
       function paint() {
         rowsBox.innerHTML = '';
+        rowUpdaters = [];
+        sink = rowUpdaters;
         data().forEach((row, i) => {
           const cells = field.columns.map(col => {
             const id = 'in-' + field.id + '-' + i + '-' + col.id;
@@ -210,7 +218,8 @@ Acta.Form = (function () {
             h('div', { class: 'f-cols' }, cells)
           ]));
         });
-        updaters.forEach(u => u());
+        sink = updaters;
+        rowUpdaters.forEach(u => u());
       }
       paint();
       return h('div', { class: 'f-field', 'data-field': field.id }, [

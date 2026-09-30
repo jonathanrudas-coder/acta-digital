@@ -176,9 +176,8 @@ Acta.App = (function () {
   async function preview(id) {
     const a = await load(id);
     if (!a) return go('#/');
-    if (M().isEmpty(M().get(a, 'acta.horaSalida'))) M().set(a, 'acta.horaSalida', Acta.Capture.now().hora);
-    a.status = 'generada';
-    await flush();
+    // La hora de salida se propone al ver la vista previa; el acta pasa a "generada" solo al exportar.
+    if (M().isEmpty(M().get(a, 'acta.horaSalida'))) { M().set(a, 'acta.horaSalida', Acta.Capture.now().hora); await flush(); }
 
     let fmt = readFmt();
     const nodes = Acta.Sheets.render(Acta.Sheets.model(a));
@@ -193,21 +192,34 @@ Acta.App = (function () {
     ['PNG', 'JPG'].forEach(label => segBox.appendChild(h('button', { type: 'button', text: label, 'aria-pressed': String(fmt === label.toLowerCase()), onclick: e => {
       fmt = label.toLowerCase(); writeFmt(fmt);
       segBox.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(b === e.currentTarget)));
+      prepare();
     } })));
     const probe = [new File([new Blob(['x'], { type: 'image/png' })], 'x.png', { type: 'image/png' })];
     const share = Acta.Export.canShareFiles(probe);
     const main = h('button', { type: 'button', class: 'o-btn-fancy', onclick: run }, [icon(share ? 'share-line' : 'download-line'), share ? 'Compartir' : 'Descargar']);
 
+    /* Las imágenes se generan antes del toque, para que "Compartir" llame a navigator.share
+       dentro del gesto del usuario (si tarda, el navegador lo rechaza y solo queda descargar). */
+    const ready = {};
+    function prepare() {
+      if (!ready[fmt]) {
+        const f = fmt;
+        ready[f] = Acta.Export.makeFiles(nodes, f, M().get(a, 'acta.numero'), M().get(a, 'acta.fecha') || Acta.Capture.now().fecha);
+        ready[f].catch(() => { delete ready[f]; });
+      }
+      return ready[fmt];
+    }
+
     async function run() {
       main.classList.add('is-loading'); status.innerHTML = '';
       try {
-        const files = [];
-        for (let i = 0; i < nodes.length; i++) {
-          const blob = await Acta.Export.toBlob(nodes[i], fmt);
-          const name = Acta.Export.fileName(M().get(a, 'acta.numero'), i + 1, M().get(a, 'acta.fecha') || Acta.Capture.now().fecha, fmt);
-          files.push(new File([blob], name, { type: fmt === 'jpg' ? 'image/jpeg' : 'image/png' }));
-        }
+        const files = await prepare();
         const how = await Acta.Export.deliver(files);
+        if (how === 'retry') {
+          status.appendChild(alertBox('Las imágenes ya están listas. Toca "Compartir" otra vez.', false));
+          return;
+        }
+        a.status = 'generada'; a.updatedAt = Date.now(); await flush();
         status.appendChild(alertBox(how === 'shared' ? 'Imágenes listas para compartir.' : 'Se descargaron ' + files.length + ' imágenes: ' + files.map(f => f.name).join(', ') + '.', false));
       } catch (e) {
         status.appendChild(alertBox(e.message, true, [' ', h('button', { type: 'button', class: 'o-link', text: 'Reintentar', onclick: run })]));
@@ -225,7 +237,7 @@ Acta.App = (function () {
     nodes.forEach(n => n.querySelectorAll('img').forEach(img => img.addEventListener('load', layout)));
     onResize = layout;
     window.addEventListener('resize', layout);
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(layout);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { layout(); prepare(); }); else prepare();
   }
 
   async function route() {

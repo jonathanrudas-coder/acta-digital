@@ -15,11 +15,22 @@ const REMOTE = [
 ];
 const RUNTIME_HOSTS = ['cdn.jsdelivr.net', 'fonts.googleapis.com', 'fonts.gstatic.com'];
 
+/* Guarda un recurso remoto; si es CSS, guarda también las fuentes que referencia (woff2 de Inter y Remix Icon). */
+async function cacheRemote(cache, url) {
+  const res = await fetch(new Request(url, { mode: 'cors' }));
+  if (!res.ok) return;
+  await cache.put(url, res.clone());
+  if (!/\.css(\?|$)|fonts\.googleapis\.com\/css/.test(url)) return;
+  const css = await res.text();
+  const fonts = [...css.matchAll(/url\(\s*['"]?([^'")]+\.woff2[^'")]*)['"]?\s*\)/g)].map(m => new URL(m[1], url).href);
+  await Promise.all(fonts.map(f => cache.add(new Request(f, { mode: 'cors' })).catch(() => {})));
+}
+
 self.addEventListener('install', event => {
   event.waitUntil((async () => {
     const cache = await caches.open(CACHE);
     await cache.addAll(LOCAL);
-    await Promise.all(REMOTE.map(u => cache.add(new Request(u, { mode: 'cors' })).catch(() => {})));
+    await Promise.all(REMOTE.map(u => cacheRemote(cache, u).catch(() => {})));
     await self.skipWaiting();
   })());
 });
