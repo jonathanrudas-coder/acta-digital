@@ -9,6 +9,16 @@ una imagen por hoja, con el estilo del design system Olibia.
 
 Los datos se guardan solo en el navegador del dispositivo (IndexedDB). No hay servidor ni cuentas.
 
+**En línea:** https://jonathanrudas-coder.github.io/acta-digital/ — ábrela en el celular y usa
+"Agregar a pantalla de inicio" (Android: menú ⋮ de Chrome; iPhone: botón Compartir de Safari) para
+instalarla y usarla sin señal.
+
+## Publicar cambios
+
+Cada `git push` a `main` actualiza el sitio en 1–2 minutos (GitHub Pages). Antes de subir una versión
+nueva, cambia `CACHE` en `sw.js` (`acta-v2`, `acta-v3`, …) para que los celulares descarguen los
+archivos nuevos.
+
 ## Requisitos
 
 - Python 3 (solo para servir los archivos).
@@ -72,9 +82,6 @@ Páginas de apoyo: `tests/components.html` (componentes Olibia en claro/oscuro) 
 | `src/store.js`, `src/capture.js`, `src/export.js` | Guardado local, GPS/firmas/fotos, exportación |
 | `styles/olibia-tokens.css` | Tokens del design system Olibia (copia; los títulos usan Inter en vez de Season Mix) |
 | `sw.js`, `manifest.webmanifest`, `icons/` | App instalable y sin conexión |
-
-Al publicar una versión nueva, cambia `CACHE` en `sw.js` (`acta-v2`, `acta-v3`, …) para que los
-dispositivos reciban los archivos actualizados.
 
 ## Pendientes conocidos
 
