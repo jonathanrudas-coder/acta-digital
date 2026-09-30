@@ -1,3 +1,4 @@
+(function () {
 const C = Acta.Catalog;
 test('24 secciones en orden y hojas correctas', () => {
   assert.equal(C.sections.length, 24);
@@ -35,3 +36,4 @@ test('listas sin duplicados y comercializadores incluye BIA', () => {
   assert.equal(Acta.Lists.comercializadores[0], 'BIA Energy');
   assert.equal(Acta.Lists.departamentos.length, 33);
 });
+})();
