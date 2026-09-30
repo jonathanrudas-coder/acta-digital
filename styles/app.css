@@ -133,3 +133,32 @@ canvas.o-pad.is-grid {
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition: none !important; animation: none !important; }
 }
+
+/* ───────── Formulario ───────── */
+.f-wrap { display: grid; gap: 12px; padding: 12px 16px 120px; max-width: 720px; margin: 0 auto; }
+.f-index { display: flex; gap: 6px; overflow-x: auto; padding: 4px 0 8px; scrollbar-width: none; }
+.f-index::-webkit-scrollbar { display: none; }
+.f-chip { flex: none; border: 0; border-radius: 999px; padding: 6px 12px; min-height: 32px; background: var(--color-bg-white-0);
+  color: var(--color-text-sub-600); font: 500 13px/18px var(--font-sans); box-shadow: var(--ring); cursor: pointer; }
+.f-chip:hover { color: var(--color-text-strong-950); }
+.f-sec > summary { display: flex; align-items: center; gap: 10px; padding: 14px 16px; min-height: 56px; cursor: pointer; list-style: none; }
+.f-sec > summary::-webkit-details-marker { display: none; }
+.f-sec > summary h2 { flex: 1; min-width: 0; font-size: 17px; line-height: 22px; }
+.f-sec > summary > i { font-size: 20px; color: var(--color-text-soft-400); transition: transform 200ms var(--ease-bia); }
+.f-sec[open] > summary > i { transform: rotate(180deg); }
+.f-num { flex: none; width: 24px; height: 24px; border-radius: 999px; display: grid; place-content: center;
+  background: var(--color-bg-weak-50); color: var(--color-text-sub-600); font: 500 12px/1 var(--font-sans); }
+.f-count { flex: none; font-size: 12px; color: var(--color-text-soft-400); }
+.f-body { display: grid; gap: 16px; padding: 0 16px 16px; }
+.f-note { margin: 0; font-size: 13px; color: var(--color-text-sub-600); }
+.f-field { min-width: 0; }
+.f-tools { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+.f-multi { display: grid; }
+.f-photo { display: block; width: 100%; max-height: 320px; object-fit: contain; border-radius: var(--radius-10); background: var(--color-bg-weak-50); }
+.f-grid, .f-list { display: grid; gap: 10px; }
+.f-grid > .o-sub, .f-field > .o-sub { margin-bottom: 2px; }
+.f-row { display: grid; gap: 12px; padding: 12px; border-radius: var(--radius-12); background: var(--color-bg-weak-50); }
+.f-row .o-input, .f-row .o-select { background: var(--color-bg-white-0); }
+.f-row-title { display: flex; align-items: center; justify-content: space-between; font: 500 14px/20px var(--font-sans); }
+.f-cols { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; }
+.f-cols .o-seg button { min-width: 48px; }
