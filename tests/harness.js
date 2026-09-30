@@ -21,5 +21,10 @@
     s.textContent = passed + ' passed, ' + failed + ' failed';
     s.setAttribute('data-done', '1');
     document.title = (failed ? 'FAIL ' : 'PASS ') + passed + '/' + (passed + failed);
+    if (/[?&]report=1/.test(location.search)) {
+      var lines = Array.prototype.map.call(list.children, function (li) { return li.textContent; });
+      lines.push(s.textContent);
+      try { await fetch('/__results', { method: 'POST', body: lines.join('\n') }); } catch (e) { /* sin servidor de reporte */ }
+    }
   };
 })();
