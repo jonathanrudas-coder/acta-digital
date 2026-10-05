@@ -224,9 +224,9 @@ Acta.Catalog = (function () {
         num('cantidad', 'Cantidad', { inputmode: 'numeric' })
       ] })
     ] },
-    { id: 'unifilar', title: 'Esquema unifilar', sheet: 2, fields: [
-      f('unifilar.dibujo', 'Dibujo del esquema', 'drawing'),
-      f('unifilar.foto', 'Foto del esquema', 'photo')
+    { id: 'unifilar', title: 'Diagrama unifilar', sheet: 2, fields: [
+      f('unifilar.dibujo', 'Dibujo del diagrama', 'drawing'),
+      f('unifilar.foto', 'Foto del diagrama', 'photo')
     ] },
     { id: 'observaciones', title: 'Observaciones', sheet: 2, fields: [
       f('obs.texto', 'Observaciones', 'textarea'),

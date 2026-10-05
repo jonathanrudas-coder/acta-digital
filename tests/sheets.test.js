@@ -68,3 +68,24 @@ test('lista de máquinas omite columnas vacías', () => {
   assert.deepEqual(b.columns, ['Tipo de máquina', 'Cantidad']);
   assert.deepEqual(b.rows, [['Horno', '2']]);
 });
+(function () {
+test('diagrama unifilar: nombre nuevo en catálogo e imagen', () => {
+  assert.equal(Acta.Catalog.byId('unifilar').title, 'Diagrama unifilar');
+  const a = Fx.directa(); a.images['unifilar.foto'] = Fx.PX;
+  const sec = Acta.Sheets.model(a)[1].sections.find(s => s.id === 'unifilar');
+  assert.equal(sec.title, 'Diagrama unifilar');
+  assert.equal(sec.blocks[0].items[0].label, 'Foto del diagrama');
+});
+test('foto del diagrama: botones de cámara y de galería', () => {
+  const host = document.createElement('div'); document.body.appendChild(host);
+  const f = Acta.Form.mount(host, Fx.directa(), { onChange: () => {} });
+  const box = host.querySelector('[data-field="unifilar.foto"]');
+  const labels = [...box.querySelectorAll('button')].map(b => b.textContent.trim());
+  assert.ok(labels.includes('Tomar foto'), labels.join('|'));
+  assert.ok(labels.includes('Elegir de la galería'), labels.join('|'));
+  const inputs = [...box.querySelectorAll('input[type=file]')];
+  assert.equal(inputs.length, 2);
+  assert.equal(inputs.filter(i => i.hasAttribute('capture')).length, 1);
+  f.destroy(); host.remove();
+});
+})();

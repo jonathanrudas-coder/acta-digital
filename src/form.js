@@ -141,20 +141,22 @@ Acta.Form = (function () {
     }
 
     function photoField(field) {
-      const input = h('input', { type: 'file', accept: 'image/*', capture: 'environment', hidden: true });
+      // Dos entradas: una abre la cámara directo; la otra deja elegir una foto de la galería.
+      const camera = h('input', { type: 'file', accept: 'image/*', capture: 'environment', hidden: true });
+      const gallery = h('input', { type: 'file', accept: 'image/*', hidden: true });
       const img = h('img', { class: 'f-photo', alt: field.label });
       const hint = h('div', { class: 'o-hint is-error', hidden: true });
       const remove = h('button', { type: 'button', class: 'o-btn is-error', onclick: () => {
         delete acta.images[field.id]; acta.updatedAt = Date.now(); changed();
       } }, [icon('delete-bin-line'), 'Quitar']);
-      input.addEventListener('change', async () => {
+      [camera, gallery].forEach(input => input.addEventListener('change', async () => {
         const file = input.files && input.files[0];
         input.value = '';
         if (!file) return;
         hint.hidden = true;
         try { acta.images[field.id] = await Acta.Capture.photo(file); acta.updatedAt = Date.now(); changed(); }
         catch (e) { hint.hidden = false; hint.textContent = e.message; }
-      });
+      }));
       updaters.push(() => {
         const src = acta.images[field.id];
         img.hidden = remove.hidden = !src;
@@ -162,8 +164,12 @@ Acta.Form = (function () {
       });
       return h('div', { class: 'f-field', 'data-field': field.id }, [
         h('label', { class: 'o-label', text: field.label }), img,
-        h('div', { class: 'f-tools' }, [h('button', { type: 'button', class: 'o-btn', onclick: () => input.click() }, [icon('camera-line'), 'Tomar o subir foto']), remove]),
-        input, hint
+        h('div', { class: 'f-tools' }, [
+          h('button', { type: 'button', class: 'o-btn', onclick: () => camera.click() }, [icon('camera-line'), 'Tomar foto']),
+          h('button', { type: 'button', class: 'o-btn', onclick: () => gallery.click() }, [icon('image-line'), 'Elegir de la galería']),
+          remove
+        ]),
+        camera, gallery, hint
       ]);
     }
 
