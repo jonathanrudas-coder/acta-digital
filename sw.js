@@ -1,5 +1,5 @@
 /* Service worker: guarda la app para que funcione sin señal. Cambia CACHE en cada versión nueva. */
-const CACHE = 'acta-v2';
+const CACHE = 'acta-v3';
 const LOCAL = [
   './', 'index.html', 'manifest.webmanifest',
   'styles/olibia-tokens.css', 'styles/app.css', 'styles/sheet.css',
@@ -28,7 +28,8 @@ async function cacheRemote(cache, url) {
 self.addEventListener('install', event => {
   event.waitUntil((async () => {
     const cache = await caches.open(CACHE);
-    await cache.addAll(LOCAL);
+    // cache: 'reload' evita que la versión nueva se llene con archivos viejos de la caché HTTP del navegador.
+    await cache.addAll(LOCAL.map(u => new Request(u, { cache: 'reload' })));
     await Promise.all(REMOTE.map(u => cacheRemote(cache, u).catch(() => {})));
     await self.skipWaiting();
   })());
