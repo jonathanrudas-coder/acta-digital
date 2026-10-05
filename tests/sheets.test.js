@@ -89,3 +89,10 @@ test('foto del diagrama: botones de cámara y de galería', () => {
   f.destroy(); host.remove();
 });
 })();
+(function () {
+test('encabezado de las páginas: visita de inspección y/o revisión', async () => {
+  const pages = await Acta.Sheets.renderPages(Acta.Sheets.model(Fx.directa()));
+  const eyebrow = pages[0].querySelector('.p-eyebrow').textContent;
+  assert.equal(eyebrow, 'OPS-FM-03 · Visita de inspección y/o revisión');
+});
+})();

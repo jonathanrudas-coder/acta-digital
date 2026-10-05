@@ -93,7 +93,7 @@ Acta.App = (function () {
     const list = (title, items) => items.length ? [h('h2', { class: 'o-sub a-list-title', text: title }), h('ul', { class: 'a-list' }, items.map(row))] : [];
 
     screen([
-      topbar('Actas de visita previa'),
+      topbar('Actas de inspección y/o revisión'),
       h('div', { class: 'a-page' }, [
         !persistent ? alertBox('Este dispositivo no guarda borradores. No cierres la app hasta generar las imágenes.', true) : null,
         draft ? alertBox('Tienes un acta sin terminar.', false, [' ', h('button', { type: 'button', class: 'o-link', text: 'Continuar ' + actaTitle(draft).replace('Acta ', 'acta '), onclick: () => go('#/acta/' + draft.id) })]) : null,

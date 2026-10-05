@@ -192,7 +192,7 @@ Acta.Sheets = (function () {
     const brand = el('div', 'p-brand');
     brand.innerHTML = BOLT;
     const titles = el('div', 'p-titles');
-    titles.appendChild(el('div', 'p-eyebrow', 'OPS-FM-03 · Visita previa para conexión eléctrica'));
+    titles.appendChild(el('div', 'p-eyebrow', 'OPS-FM-03 · Visita de inspección y/o revisión'));
     titles.appendChild(el('div', 'p-acta', 'Acta N° ' + (header.actaNo || 'sin número')));
     brand.appendChild(titles);
     head.appendChild(brand);
