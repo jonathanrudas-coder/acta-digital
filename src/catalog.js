@@ -123,6 +123,15 @@ Acta.Catalog = (function () {
         'Cubierta principal · 1', 'Cubierta principal · 2', 'Demanda máxima · 1', 'Demanda máxima · 2',
         'Caja de conexiones · 1', 'Caja de conexiones · 2'] })
     ] },
+    { id: 'otrosSellos', title: 'Otros sellos', sheet: 1, fields: [
+      f('otrosSellosList', 'Otros sellos', 'list', { addLabel: 'Agregar sello', itemLabel: 'Sello', columns: [
+        suggest('ubicacion', 'Ubicación', 'ubicacionSello'),
+        f('serial', 'Serial del sello'),
+        suggest('tipo', 'Tipo de sello', 'tipoSello'),
+        choice('propiedad', 'Propiedad', ['Representante Frontera', 'Operador de Red', 'Laboratorio']),
+        suggest('color', 'Color', 'colorSello')
+      ] })
+    ] },
     { id: 'pruebas', title: 'Pruebas medidor de energía', sheet: 1, fields: [
       f('pruebasFase', 'Pruebas por fase', 'grid', { rows: ['R', 'S', 'T', 'Total'], columns: [
         num('voltaje', 'Voltaje'), num('corriente', 'Corriente'), num('p', 'P'), num('q', 'Q'),
@@ -209,7 +218,7 @@ Acta.Catalog = (function () {
       f('serv.interesCual', '¿Cuáles otros servicios?', 'text', { when: { field: 'serv.interes', eq: 'Otros' } })
     ] },
     { id: 'maquinas', title: 'Información máquinas', sheet: 2, fields: [
-      f('maquinasList', 'Máquinas', 'list', { columns: [
+      f('maquinasList', 'Máquinas', 'list', { addLabel: 'Agregar máquina', itemLabel: 'Máquina', columns: [
         f('tipo', 'Tipo de máquina'), num('potenciaKw', 'Potencia (kW)'), num('voltaje', 'Voltaje (V)'),
         num('corriente', 'Corriente (A)'), num('frecuencia', 'Frecuencia (Hz)'), num('fp', 'Factor de potencia'),
         num('cantidad', 'Cantidad', { inputmode: 'numeric' })

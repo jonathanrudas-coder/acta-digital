@@ -25,6 +25,8 @@ Acta.Lists = (function () {
       'San Andrés y Providencia', 'Santander', 'Sucre', 'Tolima', 'Valle del Cauca', 'Vaupés', 'Vichada'],
     tipoSello: ['AN', 'TA', 'LA', 'PL', 'FO', 'CA', 'EST', 'OT'],
     propiedadSello: ['Representante Frontera', 'Operador de Red', 'Laboratorio'],
-    colorSello: ['Verde', 'Amarillo', 'Azul', 'Rojo', 'Blanco', 'Naranja', 'Negro']
+    colorSello: ['Verde', 'Amarillo', 'Azul', 'Rojo', 'Blanco', 'Naranja', 'Negro'],
+    ubicacionSello: ['Bornera medidor', 'Bloque de pruebas', 'Celda de medida', 'Tapa módem', 'Totalizador',
+      'Caja de conexiones', 'Cubierta principal', 'Gabinete', 'Transformador de corriente', 'Transformador de tensión']
   };
 })();

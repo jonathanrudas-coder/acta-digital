@@ -2,7 +2,7 @@
 <html lang="es" data-theme="light">
 <head>
 <meta charset="utf-8">
-<title>Vista previa de hojas</title>
+<title>Vista previa de páginas</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap">
 <link rel="stylesheet" href="../styles/olibia-tokens.css">
 <link rel="stylesheet" href="../styles/app.css">
@@ -18,24 +18,40 @@
 <script src="../src/sheets.js"></script>
 <script src="fixtures.js"></script>
 <script>
-  /* ?sheet=1|2 muestra una sola hoja; ?largo=1 añade observación de 2000 caracteres sin espacios. */
-  const q = new URLSearchParams(location.search);
-  const a = Fx.indirecta();
-  if (q.get('largo')) Acta.Model.set(a, 'obs.texto', 'SERIE' + 'x'.repeat(1995));
-  Acta.Model.set(a, 'riesgo.q9', 'Sí');
-  Acta.Model.set(a, 'celda.enCelda', 'Sí'); Acta.Model.set(a, 'celda.estado', 'Malo');
-  Acta.Model.set(a, 'serv.interes', ['Paneles solares', 'Carga vehicular SVG']);
-  a.tables.maquinasList = [{ tipo: 'Horno', potenciaKw: '12', cantidad: '2' }];
-  Acta.Model.setCell(a, 'pruebasFase', 'R', 'voltaje', '120'); Acta.Model.setCell(a, 'pruebasFase', 'R', 'corriente', '15,2');
-  Acta.Model.setCell(a, 'sellosMed', 'Cubierta principal · 1', 'serial', 'BIA 10001');
-  Acta.Model.setCell(a, 'sellosMed', 'Cubierta principal · 1', 'color', 'Verde');
-  const c = document.createElement('canvas'); c.width = 600; c.height = 400;
-  const x = c.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, 600, 400); x.lineWidth = 4;
-  x.strokeRect(50, 50, 500, 300); x.beginPath(); x.moveTo(50, 200); x.lineTo(550, 200); x.stroke();
-  a.images['unifilar.dibujo'] = c.toDataURL('image/png');
-  const nodes = Acta.Sheets.render(Acta.Sheets.model(a));
-  const only = q.get('sheet');
-  nodes.forEach((n, i) => { if (!only || String(i + 1) === only) document.getElementById('box').appendChild(n); });
+  /* ?page=N muestra una sola página; ?grande=1 usa un acta enorme (observación larga, 30 máquinas, 20 sellos). */
+  (async () => {
+    const q = new URLSearchParams(location.search);
+    const a = Fx.indirecta();
+    Acta.Model.set(a, 'obs.texto', 'OT ALRT_CO0500006320 | Medidor 37297196760 | Medida semidirecta\n\nSe realiza visita para atención de emergencia en el predio. ' +
+      'La emergencia fue originada por el gabinete de medidor que se encontraba caído debido al mal estado de la cinta bandi que asegura la estructura. ' +
+      'Se ejecutó el cambio de la cinta bandi y se configuró nuevamente el cable de control.');
+    Acta.Model.set(a, 'riesgo.q9', 'Sí');
+    Acta.Model.set(a, 'celda.enCelda', 'Sí'); Acta.Model.set(a, 'celda.estado', 'Bueno');
+    Acta.Model.set(a, 'serv.interes', ['Paneles solares', 'Carga vehicular SVG']);
+    Acta.Model.set(a, 'tele.marca', 'INHEMETER'); Acta.Model.set(a, 'tele.ip', '10.87.218.241');
+    a.tables.medidores.Reactiva = { marca: 'INHEMETER', serie: '037297196760', lectura: '000946.801' };
+    a.tables.otrosSellosList = [
+      { ubicacion: 'Bornera medidor', serial: 'Bia 40801', tipo: 'AN', propiedad: 'Representante Frontera', color: 'Verde' },
+      { ubicacion: 'Bornera medidor', serial: 'Bia 40802', tipo: 'AN', propiedad: 'Representante Frontera', color: 'Verde' },
+      { ubicacion: 'Bloque de pruebas', serial: 'Bia 40803', tipo: 'AN', propiedad: 'Representante Frontera', color: 'Verde' }
+    ];
+    a.tables.maquinasList = [{ tipo: 'Horno', potenciaKw: '12', cantidad: '2' }];
+    Acta.Model.setCell(a, 'pruebasFase', 'R', 'voltaje', '120'); Acta.Model.setCell(a, 'pruebasFase', 'R', 'corriente', '15,2');
+    if (q.get('grande')) {
+      Acta.Model.set(a, 'obs.texto', 'Observación larga. '.repeat(120));
+      a.tables.maquinasList = Array.from({ length: 30 }, (_, i) => ({ tipo: 'Máquina ' + (i + 1), potenciaKw: '5', cantidad: '1' }));
+      a.tables.otrosSellosList = Array.from({ length: 20 }, (_, i) => ({ ubicacion: 'Bornera medidor', serial: 'BIA ' + (40800 + i), color: 'Verde' }));
+    }
+    const c = document.createElement('canvas'); c.width = 600; c.height = 400;
+    const x = c.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, 600, 400); x.lineWidth = 4;
+    x.strokeRect(50, 50, 500, 300); x.beginPath(); x.moveTo(50, 200); x.lineTo(550, 200); x.stroke();
+    a.images['unifilar.dibujo'] = c.toDataURL('image/png');
+    if (document.fonts) await document.fonts.ready;
+    const pages = await Acta.Sheets.renderPages(Acta.Sheets.model(a));
+    const only = q.get('page');
+    pages.forEach((p, i) => { if (!only || String(i + 1) === only) document.getElementById('box').appendChild(p); });
+    document.title = 'páginas ' + pages.length + ' escala ' + pages[0].style.getPropertyValue('--s') + ' alto ' + pages[0].style.height;
+  })();
 </script>
 </body>
 </html>

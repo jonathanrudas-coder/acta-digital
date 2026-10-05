@@ -30,7 +30,7 @@ const LOCAL = ['/', '/index.html', '/manifest.webmanifest', '/src/sheets.js', '/
     if (phase === '1') {
       await navigator.serviceWorker.register('/sw.js', { scope: '/' });
       await navigator.serviceWorker.ready;
-      const c = await caches.open('acta-v1');
+      const c = await caches.open('acta-v2');
       await c.addAll(['/tests/sw-check.html', '/tests/fixtures.js']); // solo para esta prueba
       out.push('cache entries: ' + (await c.keys()).length);
       out.push('RESULT ok');
@@ -39,11 +39,11 @@ const LOCAL = ['/', '/index.html', '/manifest.webmanifest', '/src/sheets.js', '/
       let bad = 0;
       for (const u of LOCAL) { const r = await fetch(u); if (!r.ok) { bad++; out.push('FAIL ' + u + ' ' + r.status); } }
       out.push('local ok: ' + (LOCAL.length - bad) + '/' + LOCAL.length);
-      const keys = (await (await caches.open('acta-v1')).keys()).map(k => k.url);
+      const keys = (await (await caches.open('acta-v2')).keys()).map(k => k.url);
       const fonts = { inter: keys.some(u => /fonts\.gstatic\.com\/.+\.woff2/.test(u)), remix: keys.some(u => /remixicon.*\.woff2/.test(u)) };
       out.push('fonts cached: inter=' + fonts.inter + ' remix=' + fonts.remix);
       if (!fonts.inter || !fonts.remix) bad++;
-      const [node] = Acta.Sheets.render(Acta.Sheets.model(Fx.directa()));
+      const [node] = await Acta.Sheets.renderPages(Acta.Sheets.model(Fx.directa()));
       document.getElementById('box').appendChild(node);
       const blob = await Acta.Export.toBlob(node, 'png');
       out.push('png bytes: ' + blob.size);

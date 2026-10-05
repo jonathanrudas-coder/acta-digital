@@ -180,7 +180,8 @@ Acta.App = (function () {
     if (M().isEmpty(M().get(a, 'acta.horaSalida'))) { M().set(a, 'acta.horaSalida', Acta.Capture.now().hora); await flush(); }
 
     let fmt = readFmt();
-    const nodes = Acta.Sheets.render(Acta.Sheets.model(a));
+    if (document.fonts && document.fonts.ready) await document.fonts.ready;
+    const nodes = await Acta.Sheets.renderPages(Acta.Sheets.model(a));
     const frames = nodes.map(n => h('div', { class: 'v-frame' }, [n]));
     const stage = h('div', { class: 'v-stage' }, frames);
     function layout() {

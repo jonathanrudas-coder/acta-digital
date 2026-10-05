@@ -4,7 +4,7 @@ window.Acta = window.Acta || {};
 Acta.Export = (function () {
   function fileName(actaNo, n, fecha, fmt) {
     const no = String(actaNo || '').trim().replace(/[^A-Za-z0-9_-]/g, '-') || 'SN';
-    return 'Acta-' + no + '-Hoja' + n + '-' + fecha + '.' + fmt;
+    return 'Acta-' + no + '-Pag' + n + '-' + fecha + '.' + fmt;
   }
 
   async function render(node, fmt, pixelRatio) {
@@ -64,7 +64,7 @@ Acta.Export = (function () {
   async function deliver(files) {
     if (canShareFiles(files)) {
       try {
-        await navigator.share({ files, title: files[0].name.replace(/-Hoja\d.*$/, '') });
+        await navigator.share({ files, title: files[0].name.replace(/-Pag\d.*$/, '') });
         return 'shared';
       } catch (e) {
         if (e && e.name === 'AbortError') return 'shared';

@@ -30,13 +30,13 @@ test('ratioFor limita el tamaño del canvas', () => {
   assert.ok(Acta.Export.ratioFor(100000) >= 0.5);
 });
 test('makeFiles arma los archivos con nombre y tipo', async () => {
-  const nodes = Acta.Sheets.render(Acta.Sheets.model(Fx.directa()));
+  const nodes = [document.createElement('div'), document.createElement('div')];
   const box = document.createElement('div'); nodes.forEach(n => box.appendChild(n)); document.body.appendChild(box);
   const orig = Acta.Export.toBlob;
   Acta.Export.toBlob = async (n, fmt) => new Blob(['x'], { type: fmt === 'jpg' ? 'image/jpeg' : 'image/png' });
   try {
     const files = await Acta.Export.makeFiles(nodes, 'jpg', '03651', '2026-09-30');
-    assert.deepEqual(files.map(f => f.name), ['Acta-03651-Hoja1-2026-09-30.jpg', 'Acta-03651-Hoja2-2026-09-30.jpg']);
+    assert.deepEqual(files.map(f => f.name), ['Acta-03651-Pag1-2026-09-30.jpg', 'Acta-03651-Pag2-2026-09-30.jpg']);
     assert.equal(files[0].type, 'image/jpeg');
   } finally { Acta.Export.toBlob = orig; box.remove(); }
 });

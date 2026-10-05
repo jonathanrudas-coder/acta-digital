@@ -211,8 +211,8 @@ Acta.Form = (function () {
             return labelled(col, control(col, acc, id), id, field.id + '.' + i + '.' + col.id);
           });
           rowsBox.appendChild(h('div', { class: 'f-row' }, [
-            h('div', { class: 'f-row-title' }, ['Máquina ' + (i + 1),
-              h('button', { type: 'button', class: 'o-btn-compact', 'aria-label': 'Quitar máquina ' + (i + 1), onclick: () => {
+            h('div', { class: 'f-row-title' }, [(field.itemLabel || 'Fila') + ' ' + (i + 1),
+              h('button', { type: 'button', class: 'o-btn-compact', 'aria-label': 'Quitar ' + (field.itemLabel || 'fila').toLowerCase() + ' ' + (i + 1), onclick: () => {
                 data().splice(i, 1); acta.updatedAt = Date.now(); paint(); changed();
               } }, [icon('close-line')])]),
             h('div', { class: 'f-cols' }, cells)
@@ -225,7 +225,7 @@ Acta.Form = (function () {
       return h('div', { class: 'f-field', 'data-field': field.id }, [
         h('div', { class: 'o-sub', text: field.label }), rowsBox,
         h('button', { type: 'button', class: 'o-btn', onclick: () => { data().push({}); acta.updatedAt = Date.now(); paint(); changed(); } },
-          [icon('add-line'), 'Agregar máquina'])
+          [icon('add-line'), field.addLabel || 'Agregar'])
       ]);
     }
 

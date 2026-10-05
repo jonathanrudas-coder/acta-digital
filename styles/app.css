@@ -199,4 +199,4 @@ canvas.o-pad.is-grid {
 .a-status:empty { display: none; }
 .v-stage { display: grid; gap: 16px; }
 .v-frame { position: relative; overflow: hidden; border-radius: var(--radius-12); box-shadow: var(--shadow-card); }
-.v-frame > .sheet { transform-origin: top left; position: absolute; top: 0; left: 0; }
+.v-frame > .page { transform-origin: top left; position: absolute; top: 0; left: 0; }

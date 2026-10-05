@@ -1,11 +1,11 @@
 (function () {
 const C = Acta.Catalog;
-test('24 secciones en orden y hojas correctas', () => {
-  assert.equal(C.sections.length, 24);
+test('25 secciones en orden y hojas correctas', () => {
+  assert.equal(C.sections.length, 25);
   assert.equal(C.sections[0].id, 'encabezado');
-  assert.equal(C.sections[23].id, 'firmas');
+  assert.equal(C.sections[24].id, 'firmas');
   assert.deepEqual(C.sections.filter(s => s.sheet === 1).map(s => s.id),
-    ['encabezado','comercial','asesoria','tecnica','trafo','celdaMedidor','medidor','telemedida','sellosMedidor','pruebas','totalizador','tcs','tps']);
+    ['encabezado','comercial','asesoria','tecnica','trafo','celdaMedidor','medidor','telemedida','sellosMedidor','otrosSellos','pruebas','totalizador','tcs','tps']);
 });
 test('ids únicos', () => {
   const ids = [...C.sections.map(s => s.id), ...C.fields().map(f => f.id)];

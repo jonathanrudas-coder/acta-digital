@@ -43,6 +43,24 @@ test('firmas en hoja 2', () => {
   const sig = f.blocks.find(b => b.kind === 'signatures');
   assert.deepEqual(sig.items.map(i => i.role), ['Usuario / Testigo', 'BIA']);
 });
+test('otros sellos: lista con ubicación, sin columnas vacías', () => {
+  const a = Fx.directa();
+  a.tables.otrosSellosList = [{ ubicacion: 'Bornera medidor', serial: 'BIA 40801', color: 'Verde' }, {}];
+  const sec = S.model(a)[0].sections.find(s => s.id === 'otrosSellos');
+  assert.deepEqual(sec.blocks[0].columns, ['Ubicación', 'Serial del sello', 'Color']);
+  assert.deepEqual(sec.blocks[0].rows, [['Bornera medidor', 'BIA 40801', 'Verde']]);
+});
+test('agregar sello en el formulario', () => {
+  const host = document.createElement('div'); document.body.appendChild(host);
+  const a = Fx.directa();
+  const f = Acta.Form.mount(host, a, { onChange: () => {} });
+  const add = [...host.querySelectorAll('button')].find(b => b.textContent.includes('Agregar sello'));
+  assert.ok(add, 'no hay botón Agregar sello');
+  add.click(); add.click();
+  assert.equal(a.tables.otrosSellosList.length, 2);
+  assert.ok(host.textContent.includes('Sello 2'));
+  f.destroy(); host.remove();
+});
 })();
 test('lista de máquinas omite columnas vacías', () => {
   const a = Fx.directa(); a.tables.maquinasList = [{ tipo: 'Horno', cantidad: '2' }, {}];
