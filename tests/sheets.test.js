@@ -96,3 +96,12 @@ test('encabezado de las páginas: visita de inspección y/o revisión', async ()
   assert.equal(eyebrow, 'OPS-FM-03 · Visita de inspección y/o revisión');
 });
 })();
+(function () {
+test('encabezado de las páginas usa el logo nuevo (imagen incrustada)', async () => {
+  const pages = await Acta.Sheets.renderPages(Acta.Sheets.model(Fx.directa()));
+  const img = pages[0].querySelector('.p-brand img');
+  assert.ok(img, 'no hay imagen de logo');
+  assert.ok(img.src.startsWith('data:image/png;base64,'), img.src.slice(0, 30));
+  assert.equal(pages[0].querySelector('.p-brand svg'), null);
+});
+})();

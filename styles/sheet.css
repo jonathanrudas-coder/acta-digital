@@ -11,7 +11,7 @@
 
 .p-head { display: flex; justify-content: space-between; align-items: center; gap: 1em; flex: none; }
 .p-brand { display: flex; gap: .7em; align-items: center; min-width: 0; }
-.p-brand svg { width: 2.2em; height: 2.2em; flex: none; }
+.p-brand .p-logo { width: 2.2em; height: 2.2em; flex: none; border-radius: .45em; display: block; }
 .p-titles { min-width: 0; }
 .p-eyebrow { font-size: .62em; line-height: 1.3; letter-spacing: .05em; text-transform: uppercase; font-weight: 500; color: var(--color-text-sub-600); }
 .p-acta { font-family: var(--font-display); font-weight: 600; font-size: 1.3em; line-height: 1.2; overflow-wrap: anywhere; }

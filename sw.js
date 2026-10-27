@@ -1,11 +1,11 @@
 /* Service worker: guarda la app para que funcione sin señal. Cambia CACHE en cada versión nueva. */
-const CACHE = 'acta-v5';
+const CACHE = 'acta-v6';
 const LOCAL = [
   './', 'index.html', 'manifest.webmanifest',
   'styles/olibia-tokens.css', 'styles/app.css', 'styles/sheet.css',
   'src/model.js', 'src/lists.js', 'src/catalog.js', 'src/rules.js', 'src/validate.js', 'src/sheets.js',
   'src/store.js', 'src/capture.js', 'src/form.js', 'src/export.js', 'src/app.js',
-  'icons/icon.svg', 'icons/icon-192.png', 'icons/icon-512.png'
+  'icons/favicon-32.png', 'icons/icon-192.png', 'icons/icon-512.png'
 ];
 const REMOTE = [
   'https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js',
