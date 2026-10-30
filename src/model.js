@@ -69,6 +69,7 @@ Acta.Model = (function () {
       put('Total', col, vals.length ? vals.reduce((x, y) => x + y, 0) / vals.length : null);
     });
     const tri = String(get(acta, 'tot.fases') || '').trim() === '3';
+    let total = {};
     FASES.concat('Total').forEach(row => {
       const v = parseNum(getCell(acta, T, row, 'voltaje'));
       const i = parseNum(getCell(acta, T, row, 'corriente'));
@@ -78,7 +79,29 @@ Acta.Model = (function () {
       put(row, 'smed', s, 3);
       put(row, 'p', okFp ? s * fp : null, 3);
       put(row, 'q', okFp ? s * Math.sqrt(1 - fp * fp) : null, 3);
+      if (row === 'Total') total = { p: okFp ? s * fp : null, q: okFp ? s * Math.sqrt(1 - fp * fp) : null };
     });
+    /* % error = (E_M − E_R) / E_R · 100, con E_M = impulsos / constante del medidor (imp/kWh)
+       y E_R = potencia del Total (kW) · tiempo (s) / 3600. */
+    const kAct = constante(getCell(acta, 'medidores', 'Activa', 'constante'));
+    const kReact = constante(getCell(acta, 'medidores', 'Reactiva', 'constante'));
+    const error = (pot, k, tiempo, impulsos) => {
+      const t = parseNum(get(acta, tiempo)), n = parseNum(get(acta, impulsos));
+      if (pot === null || !k || t === null || n === null) return null;
+      const er = pot * t / 3600;
+      return er > 0 ? (n / k - er) / er * 100 : null;
+    };
+    put('Total', 'errActiva', error(total.p, kAct, 'pr.tiempoActiva', 'pr.girosActiva'));
+    put('Total', 'errReactiva', error(total.q, kReact || kAct, 'pr.tiempoReactiva', 'pr.girosReactiva'));
+  }
+
+  /* Constante del medidor escrita a mano ("1000", "1.000", "1000 imp/kWh"): toma el primer número. */
+  function constante(txt) {
+    const m = String(txt == null ? '' : txt).match(/\d[\d.,]*/);
+    if (!m) return null;
+    const t = /^\d{1,3}(\.\d{3})+$/.test(m[0]) ? m[0].replace(/\./g, '') : m[0].replace(/[.,]$/, '');
+    const n = parseNum(t);
+    return n && n > 0 ? n : null;
   }
 
   function isEmpty(v) {

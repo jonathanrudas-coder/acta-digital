@@ -133,19 +133,19 @@ Acta.Catalog = (function () {
       ] })
     ] },
     { id: 'pruebas', title: 'Pruebas medidor de energía', sheet: 1,
-      note: 'Escribe voltaje, corriente y factor de potencia de cada fase: las potencias se calculan solas. El Total promedia voltaje, corriente y factor de potencia de las fases, y usa √3 cuando el totalizador es de 3 fases.',
+      note: 'Escribe voltaje, corriente y factor de potencia de cada fase: las potencias se calculan solas. El Total promedia voltaje, corriente y factor de potencia de las fases, y usa √3 cuando el totalizador es de 3 fases. El % de error del Total se calcula con el tiempo (s), los impulsos y la constante del medidor (sección Medidor).',
       fields: [
-      f('pruebasFase', 'Pruebas por fase', 'grid', { rows: ['R', 'S', 'T', 'Total'], calcTotal: ['voltaje', 'corriente', 'fp'], columns: [
+      f('pruebasFase', 'Pruebas por fase', 'grid', { rows: ['R', 'S', 'T', 'Total'], calcTotal: ['voltaje', 'corriente', 'fp', 'errActiva', 'errReactiva'], columns: [
         num('voltaje', 'Voltaje', { unit: 'V' }), num('corriente', 'Corriente', { unit: 'A' }), num('fp', 'Factor de potencia'),
         num('p', 'Potencia activa P', { unit: 'kW', calc: true }), num('q', 'Potencia reactiva Q', { unit: 'kVAR', calc: true }),
         num('smed', 'Potencia aparente Smed', { unit: 'kVA', calc: true }),
         num('errActiva', '% error activa'),
         num('errReactiva', '% error reactiva')
       ] }),
-      num('pr.tiempoActiva', 'Tiempo activa'),
-      num('pr.girosActiva', 'Giros activa'),
-      num('pr.tiempoReactiva', 'Tiempo reactiva'),
-      num('pr.girosReactiva', 'Giros reactiva'),
+      num('pr.tiempoActiva', 'Tiempo activa', { unit: 's' }),
+      num('pr.girosActiva', 'Giros activa (impulsos)', { inputmode: 'numeric' }),
+      num('pr.tiempoReactiva', 'Tiempo reactiva', { unit: 's' }),
+      num('pr.girosReactiva', 'Giros reactiva (impulsos)', { inputmode: 'numeric' }),
       num('pr.lecturaInicial', 'Lectura inicial'),
       num('pr.lecturaFinal', 'Lectura final'),
       f('pr.diferencia', 'Diferencia', 'computed', { compute: 'diferencia' }),

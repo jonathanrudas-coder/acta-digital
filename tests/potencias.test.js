@@ -73,4 +73,37 @@ test('potencias: un borrador viejo (en W) se recalcula al generar el resumen', (
   assert.equal(cell(a, 'R', 'p'), '0,96');
   assert.equal(cell(a, 'R', 'smed'), '1,2');
 });
+test('error: % activa y reactiva en la fila Total con tiempo, impulsos y constante', () => {
+  const a = Acta.Model.newActa();
+  fill(a, 'R', '120', '10', '0,8');                       // P total 0,96 kW · Q total 0,72 kVAR
+  Acta.Model.setCell(a, 'medidores', 'Activa', 'constante', '1000');
+  Acta.Model.set(a, 'pr.tiempoActiva', '60'); Acta.Model.set(a, 'pr.girosActiva', '16');
+  Acta.Model.set(a, 'pr.tiempoReactiva', '100'); Acta.Model.set(a, 'pr.girosReactiva', '19');
+  Acta.Model.recalcPruebas(a);
+  assert.equal(cell(a, 'Total', 'errActiva'), '0');        // 16/1000 = 0,96·60/3600
+  assert.equal(cell(a, 'Total', 'errReactiva'), '-5');     // usa la constante de activa si falta la de reactiva
+  Acta.Model.set(a, 'pr.girosActiva', '17'); Acta.Model.recalcPruebas(a);
+  assert.equal(cell(a, 'Total', 'errActiva'), '6,25');
+  Acta.Model.setCell(a, 'medidores', 'Activa', 'constante', '1.000'); Acta.Model.recalcPruebas(a);
+  assert.equal(cell(a, 'Total', 'errActiva'), '6,25');
+  Acta.Model.setCell(a, 'medidores', 'Reactiva', 'constante', '2000 imp/kVARh'); Acta.Model.recalcPruebas(a);
+  assert.equal(cell(a, 'Total', 'errReactiva'), '-52,5');
+});
+test('error: sin datos completos queda vacío', () => {
+  const a = Acta.Model.newActa();
+  fill(a, 'R', '120', '10', '0,8');
+  Acta.Model.set(a, 'pr.tiempoActiva', '60'); Acta.Model.set(a, 'pr.girosActiva', '16');
+  Acta.Model.recalcPruebas(a);
+  assert.equal(cell(a, 'Total', 'errActiva'), '');         // falta la constante
+  Acta.Model.setCell(a, 'medidores', 'Activa', 'constante', '1000');
+  Acta.Model.set(a, 'pr.tiempoActiva', '0'); Acta.Model.recalcPruebas(a);
+  assert.equal(cell(a, 'Total', 'errActiva'), '');         // energía de referencia 0
+});
+test('error: en el formulario el % error del Total es calculado y el de las fases no', () => {
+  const host = document.createElement('div'); document.body.appendChild(host);
+  const f = Acta.Form.mount(host, Acta.Model.newActa(), { onChange: () => {} });
+  assert.ok(host.querySelector('#in-pruebasFase_Total_errActiva').readOnly);
+  assert.ok(!host.querySelector('#in-pruebasFase_R_errActiva').readOnly);
+  f.destroy(); host.remove();
+});
 })();
