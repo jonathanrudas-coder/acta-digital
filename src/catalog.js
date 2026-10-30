@@ -132,10 +132,13 @@ Acta.Catalog = (function () {
         suggest('color', 'Color', 'colorSello')
       ] })
     ] },
-    { id: 'pruebas', title: 'Pruebas medidor de energía', sheet: 1, fields: [
+    { id: 'pruebas', title: 'Pruebas medidor de energía', sheet: 1,
+      note: 'Escribe voltaje, corriente y factor de potencia: P, Q y Smed se calculan solos. En la fila Total se usa √3 cuando el totalizador es de 3 fases.',
+      fields: [
       f('pruebasFase', 'Pruebas por fase', 'grid', { rows: ['R', 'S', 'T', 'Total'], columns: [
-        num('voltaje', 'Voltaje'), num('corriente', 'Corriente'), num('p', 'P'), num('q', 'Q'),
-        num('smed', 'Smed'), num('fp', 'Factor de potencia'), num('errActiva', '% error activa'),
+        num('voltaje', 'Voltaje', { unit: 'V' }), num('corriente', 'Corriente', { unit: 'A' }), num('fp', 'Factor de potencia'),
+        num('p', 'P', { unit: 'W', calc: true }), num('q', 'Q', { unit: 'VAR', calc: true }), num('smed', 'Smed', { unit: 'VA', calc: true }),
+        num('errActiva', '% error activa'),
         num('errReactiva', '% error reactiva')
       ] }),
       num('pr.tiempoActiva', 'Tiempo activa'),

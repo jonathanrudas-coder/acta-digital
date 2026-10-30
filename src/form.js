@@ -34,6 +34,7 @@ Acta.Form = (function () {
 
     function changed() {
       if (acta.status === 'generada') acta.status = 'borrador';
+      M().recalcPruebas(acta);
       refreshVisibility(); updaters.forEach(u => u()); onChange(acta);
     }
 
@@ -93,6 +94,11 @@ Acta.Form = (function () {
         const ta = h('textarea', { class: 'o-textarea', id: inputId, oninput: e => { acc.set(e.target.value); changed(); } });
         sink.push(() => { if (document.activeElement !== ta) ta.value = acc.get() || ''; });
         return ta;
+      }
+      if (field.calc) { // calculado por el modelo a partir de otras celdas
+        const ro = h('input', { class: 'o-input', id: inputId, readonly: true, tabindex: '-1' });
+        sink.push(() => { ro.value = acc.get() || '—'; });
+        return ro;
       }
       if (t === 'computed' || t === 'mirror') {
         const ro = h('input', { class: 'o-input', id: inputId, readonly: true, tabindex: '-1' });

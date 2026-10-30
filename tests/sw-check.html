@@ -30,7 +30,7 @@ const LOCAL = ['/', '/index.html', '/manifest.webmanifest', '/src/sheets.js', '/
     if (phase === '1') {
       await navigator.serviceWorker.register('/sw.js', { scope: '/' });
       await navigator.serviceWorker.ready;
-      const c = await caches.open('acta-v7');
+      const c = await caches.open('acta-v8');
       await c.addAll(['/tests/sw-check.html', '/tests/fixtures.js']); // solo para esta prueba
       out.push('cache entries: ' + (await c.keys()).length);
       out.push('RESULT ok');
@@ -39,7 +39,7 @@ const LOCAL = ['/', '/index.html', '/manifest.webmanifest', '/src/sheets.js', '/
       let bad = 0;
       for (const u of LOCAL) { const r = await fetch(u); if (!r.ok) { bad++; out.push('FAIL ' + u + ' ' + r.status); } }
       out.push('local ok: ' + (LOCAL.length - bad) + '/' + LOCAL.length);
-      const keys = (await (await caches.open('acta-v7')).keys()).map(k => k.url);
+      const keys = (await (await caches.open('acta-v8')).keys()).map(k => k.url);
       const fonts = { inter: keys.some(u => /fonts\.gstatic\.com\/.+\.woff2/.test(u)), remix: keys.some(u => /remixicon.*\.woff2/.test(u)) };
       out.push('fonts cached: inter=' + fonts.inter + ' remix=' + fonts.remix);
       if (!fonts.inter || !fonts.remix) bad++;

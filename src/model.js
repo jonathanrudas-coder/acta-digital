@@ -55,6 +55,24 @@ Acta.Model = (function () {
     return a === null || b === null ? '' : formatNum(b - a);
   }
 
+  /* Pruebas del medidor: con V, I y FP de cada fila calcula Smed = k·V·I, P = Smed·FP y Q = Smed·sen θ.
+     k = √3 solo en la fila Total cuando el totalizador es de 3 fases; en lo demás k = 1. */
+  function recalcPruebas(acta) {
+    const tri = String(get(acta, 'tot.fases') || '').trim() === '3';
+    ['R', 'S', 'T', 'Total'].forEach(row => {
+      const v = parseNum(getCell(acta, 'pruebasFase', row, 'voltaje'));
+      const i = parseNum(getCell(acta, 'pruebasFase', row, 'corriente'));
+      const fp = parseNum(getCell(acta, 'pruebasFase', row, 'fp'));
+      const s = v === null || i === null ? null : (row === 'Total' && tri ? Math.sqrt(3) : 1) * v * i;
+      const okFp = s !== null && fp !== null && fp >= 0 && fp <= 1;
+      const out = { smed: s, p: okFp ? s * fp : null, q: okFp ? s * Math.sqrt(1 - fp * fp) : null };
+      Object.keys(out).forEach(col => {
+        const val = out[col] === null ? '' : formatNum(out[col], 2);
+        if ((getCell(acta, 'pruebasFase', row, col) || '') !== val) setCell(acta, 'pruebasFase', row, col, val);
+      });
+    });
+  }
+
   function isEmpty(v) {
     if (v == null) return true;
     if (Array.isArray(v)) return v.length === 0;
@@ -74,5 +92,5 @@ Acta.Model = (function () {
     return best ? (best.v + 1n).toString().padStart(best.t.length, '0') : '';
   }
 
-  return { newActa, siguienteNumero, get, set, getCell, setCell, parseNum, formatNum, diferencia, isEmpty, fecha, hora };
+  return { newActa, siguienteNumero, get, set, getCell, setCell, parseNum, formatNum, diferencia, recalcPruebas, isEmpty, fecha, hora };
 })();
