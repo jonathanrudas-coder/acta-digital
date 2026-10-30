@@ -91,6 +91,7 @@ Acta.Model = (function () {
       const er = pot * t / 3600;
       return er > 0 ? (n / k - er) / er * 100 : null;
     };
+    FASES.forEach(row => { put(row, 'errActiva', null); put(row, 'errReactiva', null); }); // solo el Total lleva % error
     put('Total', 'errActiva', error(total.p, kAct, 'pr.tiempoActiva', 'pr.girosActiva'));
     put('Total', 'errReactiva', error(total.q, kReact || kAct, 'pr.tiempoReactiva', 'pr.girosReactiva'));
   }

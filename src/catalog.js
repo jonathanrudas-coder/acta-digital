@@ -135,7 +135,7 @@ Acta.Catalog = (function () {
     { id: 'pruebas', title: 'Pruebas medidor de energía', sheet: 1,
       note: 'Escribe voltaje, corriente y factor de potencia de cada fase: las potencias se calculan solas. El Total promedia voltaje, corriente y factor de potencia de las fases, y usa √3 cuando el totalizador es de 3 fases. El % de error del Total se calcula con el tiempo (s), los impulsos y la constante del medidor (sección Medidor).',
       fields: [
-      f('pruebasFase', 'Pruebas por fase', 'grid', { rows: ['R', 'S', 'T', 'Total'], calcTotal: ['voltaje', 'corriente', 'fp', 'errActiva', 'errReactiva'], columns: [
+      f('pruebasFase', 'Pruebas por fase', 'grid', { rows: ['R', 'S', 'T', 'Total'], calcTotal: ['voltaje', 'corriente', 'fp', 'errActiva', 'errReactiva'], onlyTotal: ['errActiva', 'errReactiva'], columns: [
         num('voltaje', 'Voltaje', { unit: 'V' }), num('corriente', 'Corriente', { unit: 'A' }), num('fp', 'Factor de potencia'),
         num('p', 'Potencia activa P', { unit: 'kW', calc: true }), num('q', 'Potencia reactiva Q', { unit: 'kVAR', calc: true }),
         num('smed', 'Potencia aparente Smed', { unit: 'kVA', calc: true }),

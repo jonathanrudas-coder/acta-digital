@@ -1,5 +1,5 @@
 /* Service worker: guarda la app para que funcione sin señal. Cambia CACHE en cada versión nueva. */
-const CACHE = 'acta-v11';
+const CACHE = 'acta-v12';
 const LOCAL = [
   './', 'index.html', 'manifest.webmanifest',
   'styles/olibia-tokens.css', 'styles/app.css', 'styles/sheet.css',

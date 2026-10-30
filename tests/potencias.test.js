@@ -99,11 +99,23 @@ test('error: sin datos completos queda vacío', () => {
   Acta.Model.set(a, 'pr.tiempoActiva', '0'); Acta.Model.recalcPruebas(a);
   assert.equal(cell(a, 'Total', 'errActiva'), '');         // energía de referencia 0
 });
-test('error: en el formulario el % error del Total es calculado y el de las fases no', () => {
+test('error: en el formulario el % error del Total es calculado', () => {
   const host = document.createElement('div'); document.body.appendChild(host);
   const f = Acta.Form.mount(host, Acta.Model.newActa(), { onChange: () => {} });
   assert.ok(host.querySelector('#in-pruebasFase_Total_errActiva').readOnly);
-  assert.ok(!host.querySelector('#in-pruebasFase_R_errActiva').readOnly);
+  f.destroy(); host.remove();
+});
+test('error: las fases R, S y T no tienen % de error (solo el Total)', () => {
+  const host = document.createElement('div'); document.body.appendChild(host);
+  const a = Acta.Model.newActa();
+  Acta.Model.setCell(a, 'pruebasFase', 'R', 'errActiva', '3');   // dato viejo escrito a mano
+  const f = Acta.Form.mount(host, a, { onChange: () => {} });
+  ['R', 'S', 'T'].forEach(r => {
+    assert.ok(!host.querySelector('#in-pruebasFase_' + r + '_errActiva'), r + ' sin % error activa');
+    assert.ok(!host.querySelector('#in-pruebasFase_' + r + '_errReactiva'), r + ' sin % error reactiva');
+  });
+  assert.ok(host.querySelector('#in-pruebasFase_Total_errActiva'));
+  assert.equal(cell(a, 'R', 'errActiva'), '');
   f.destroy(); host.remove();
 });
 })();
