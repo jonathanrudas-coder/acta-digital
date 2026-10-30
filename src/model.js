@@ -94,6 +94,10 @@ Acta.Model = (function () {
     FASES.forEach(row => { put(row, 'errActiva', null); put(row, 'errReactiva', null); }); // solo el Total lleva % error
     put('Total', 'errActiva', error(total.p, kAct, 'pr.tiempoActiva', 'pr.girosActiva'));
     put('Total', 'errReactiva', error(total.q, kReact || kAct, 'pr.tiempoReactiva', 'pr.girosReactiva'));
+    // % error de lecturas = |final − inicial| / inicial · 100
+    const li = parseNum(get(acta, 'pr.lecturaInicial')), lf = parseNum(get(acta, 'pr.lecturaFinal'));
+    const errLect = li === null || lf === null || li === 0 ? '' : formatNum(Math.abs((lf - li) / li) * 100, 3);
+    if ((get(acta, 'pr.error') || '') !== errLect) set(acta, 'pr.error', errLect);
   }
 
   /* Constante del medidor escrita a mano ("1000", "1.000", "1000 imp/kWh"): toma el primer número. */

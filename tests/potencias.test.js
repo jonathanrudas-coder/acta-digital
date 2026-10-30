@@ -118,4 +118,28 @@ test('error: las fases R, S y T no tienen % de error (solo el Total)', () => {
   assert.equal(cell(a, 'R', 'errActiva'), '');
   f.destroy(); host.remove();
 });
+test('error de lecturas: |final − inicial| / inicial · 100', () => {
+  const a = Acta.Model.newActa();
+  Acta.Model.set(a, 'pr.lecturaInicial', '200'); Acta.Model.set(a, 'pr.lecturaFinal', '205');
+  Acta.Model.recalcPruebas(a);
+  assert.equal(Acta.Model.get(a, 'pr.error'), '2,5');
+  Acta.Model.set(a, 'pr.lecturaFinal', '190'); Acta.Model.recalcPruebas(a);
+  assert.equal(Acta.Model.get(a, 'pr.error'), '5');
+  Acta.Model.set(a, 'pr.lecturaInicial', '946,801'); Acta.Model.set(a, 'pr.lecturaFinal', '946,835'); Acta.Model.recalcPruebas(a);
+  assert.equal(Acta.Model.get(a, 'pr.error'), '0,004');
+  Acta.Model.set(a, 'pr.lecturaInicial', '0'); Acta.Model.recalcPruebas(a);
+  assert.equal(Acta.Model.get(a, 'pr.error') || '', '');
+  Acta.Model.set(a, 'pr.lecturaInicial', ''); Acta.Model.recalcPruebas(a);
+  assert.equal(Acta.Model.get(a, 'pr.error') || '', '');
+});
+test('error de lecturas: en el formulario es calculado', () => {
+  const host = document.createElement('div'); document.body.appendChild(host);
+  const f = Acta.Form.mount(host, Acta.Model.newActa(), { onChange: () => {} });
+  const type = (id, v) => { const el = host.querySelector('#' + id); el.value = v; el.dispatchEvent(new Event('input', { bubbles: true })); };
+  type('in-pr_lecturaInicial', '200'); type('in-pr_lecturaFinal', '205');
+  const e = host.querySelector('#in-pr_error');
+  assert.ok(e.readOnly);
+  assert.equal(e.value, '2,5');
+  f.destroy(); host.remove();
+});
 })();

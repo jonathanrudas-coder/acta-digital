@@ -301,7 +301,7 @@ Acta.Form = (function () {
       return !M().isEmpty(M().get(acta, f.id));
     }
     function sectionCount(s) {
-      const vis = s.fields.filter(f => !NO_COUNT[f.type] && Acta.Rules.isVisible(f.id, acta));
+      const vis = s.fields.filter(f => !NO_COUNT[f.type] && !f.calc && Acta.Rules.isVisible(f.id, acta));
       return vis.filter(filled).length + ' de ' + vis.length;
     }
 

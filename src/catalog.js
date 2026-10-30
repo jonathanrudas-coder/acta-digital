@@ -149,7 +149,7 @@ Acta.Catalog = (function () {
       num('pr.lecturaInicial', 'Lectura inicial'),
       num('pr.lecturaFinal', 'Lectura final'),
       f('pr.diferencia', 'Diferencia', 'computed', { compute: 'diferencia' }),
-      num('pr.error', '% error')
+      num('pr.error', '% error de lecturas', { calc: true })
     ] },
     { id: 'totalizador', title: 'Información totalizador y cables de potencia', sheet: 1, fields: [
       yn('tot.tiene', '¿Tiene totalizador?'),
