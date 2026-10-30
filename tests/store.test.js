@@ -11,7 +11,7 @@ test('duplicate limpia número, horas e imágenes', async () => {
   const a = Fx.directa(); await Acta.Store.save(a);
   const d = await Acta.Store.duplicate(a.id);
   assert.ok(d.id !== a.id);
-  assert.equal(d.values['acta.numero'], undefined);
+  assert.equal(d.values['acta.numero'], '03652');            // recibe el siguiente consecutivo
   assert.equal(d.values['com.cuenta'], a.values['com.cuenta']);
   assert.deepEqual(d.images, {});
 });

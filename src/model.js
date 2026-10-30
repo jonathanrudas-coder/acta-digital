@@ -61,5 +61,18 @@ Acta.Model = (function () {
     return String(v).trim() === '';
   }
 
-  return { newActa, get, set, getCell, setCell, parseNum, formatNum, diferencia, isEmpty, fecha, hora };
+  /* Siguiente número de acta: toma el mayor número (solo dígitos) entre las referencias, le suma 1
+     y conserva el largo con ceros a la izquierda. Sin referencias numéricas devuelve ''. */
+  function siguienteNumero(refs) {
+    let best = null;
+    (refs || []).forEach(r => {
+      const t = String(r == null ? '' : r).trim();
+      if (!/^\d+$/.test(t)) return;
+      const v = BigInt(t);
+      if (!best || v > best.v || (v === best.v && t.length > best.t.length)) best = { v, t };
+    });
+    return best ? (best.v + 1n).toString().padStart(best.t.length, '0') : '';
+  }
+
+  return { newActa, siguienteNumero, get, set, getCell, setCell, parseNum, formatNum, diferencia, isEmpty, fecha, hora };
 })();

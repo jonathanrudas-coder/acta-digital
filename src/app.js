@@ -60,7 +60,10 @@ Acta.App = (function () {
     const all = await Acta.Store.list();
     const draft = all.find(a => a.status === 'borrador');
     const newBtn = h('button', { type: 'button', class: 'o-btn-fancy a-wide', onclick: async () => {
-      const a = M().newActa(); await Acta.Store.save(a); cur = a; go('#/acta/' + a.id);
+      const a = M().newActa();
+      const numero = await Acta.Store.nextNumero();
+      if (numero) a.values['acta.numero'] = numero;
+      await Acta.Store.save(a); cur = a; go('#/acta/' + a.id);
     } }, [icon('add-line'), 'Nueva acta']);
 
     function row(a) {
@@ -221,6 +224,7 @@ Acta.App = (function () {
           return;
         }
         a.status = 'generada'; a.updatedAt = Date.now(); await flush();
+        await Acta.Store.registrarNumero(M().get(a, 'acta.numero'));
         status.appendChild(alertBox(how === 'shared' ? 'Imágenes listas para compartir.' : 'Se descargaron ' + files.length + ' imágenes: ' + files.map(f => f.name).join(', ') + '.', false));
       } catch (e) {
         status.appendChild(alertBox(e.message, true, [' ', h('button', { type: 'button', class: 'o-link', text: 'Reintentar', onclick: run })]));

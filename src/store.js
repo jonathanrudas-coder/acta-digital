@@ -90,6 +90,8 @@ Acta.Store = (function () {
     });
     delete values['acta.numero'];
     delete values['acta.horaSalida'];
+    const next = await nextNumero();
+    if (next) values['acta.numero'] = next;
     const copy = Object.assign(fresh, { values, tables: clone(src.tables || {}), images: {} });
     await save(copy);
     return copy;
@@ -117,6 +119,22 @@ Acta.Store = (function () {
     await kvSet('sug:' + listId, cur.slice(-50));
   }
 
+  /* Consecutivo de actas: el último número generado se guarda aparte (por si se borra el historial);
+     los borradores y actas existentes también cuentan, para no repetir números. */
+  async function nextNumero() {
+    const refs = [await kvGet('ultimoNumero')];
+    (await list()).forEach(a => refs.push(a.values && a.values['acta.numero']));
+    return Acta.Model.siguienteNumero(refs);
+  }
+
+  async function registrarNumero(numero) {
+    const t = String(numero == null ? '' : numero).trim();
+    if (!/^\d+$/.test(t)) return;
+    const cur = await kvGet('ultimoNumero');
+    if (cur && /^\d+$/.test(cur) && BigInt(cur) >= BigInt(t)) return;
+    await kvSet('ultimoNumero', t);
+  }
+
   let timer = null;
   function saveDebounced(acta, onDone) {
     clearTimeout(timer);
@@ -126,5 +144,5 @@ Acta.Store = (function () {
   }
 
   return { init, list, latestDraft, get, save, remove, duplicate, getProfile, setProfile,
-    getSuggestions, addSuggestion, saveDebounced };
+    getSuggestions, addSuggestion, saveDebounced, nextNumero, registrarNumero };
 })();
