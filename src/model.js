@@ -55,13 +55,13 @@ Acta.Model = (function () {
     return a === null || b === null ? '' : formatNum(b - a);
   }
 
-  /* Pruebas del medidor: con V, I y FP de cada fase calcula Smed = V·I, P = Smed·FP y Q = Smed·sen θ.
+  /* Pruebas del medidor: con V, I y FP de cada fase calcula Smed = V·I/1000 (kVA), P = Smed·FP (kW) y Q = Smed·sen θ (kVAR).
      La fila Total toma el promedio de V, I y FP de las fases con dato y usa k = √3 cuando el
      totalizador es de 3 fases (k = 1 en los demás casos). */
   function recalcPruebas(acta) {
     const T = 'pruebasFase', FASES = ['R', 'S', 'T'];
-    const put = (row, col, n) => {
-      const val = n === null ? '' : formatNum(n, 2);
+    const put = (row, col, n, dec) => {
+      const val = n === null ? '' : formatNum(n, dec == null ? 2 : dec);
       if ((getCell(acta, T, row, col) || '') !== val) setCell(acta, T, row, col, val);
     };
     ['voltaje', 'corriente', 'fp'].forEach(col => {
@@ -73,11 +73,11 @@ Acta.Model = (function () {
       const v = parseNum(getCell(acta, T, row, 'voltaje'));
       const i = parseNum(getCell(acta, T, row, 'corriente'));
       const fp = parseNum(getCell(acta, T, row, 'fp'));
-      const s = v === null || i === null ? null : (row === 'Total' && tri ? Math.sqrt(3) : 1) * v * i;
+      const s = v === null || i === null ? null : (row === 'Total' && tri ? Math.sqrt(3) : 1) * v * i / 1000; // kVA
       const okFp = s !== null && fp !== null && fp >= 0 && fp <= 1;
-      put(row, 'smed', s);
-      put(row, 'p', okFp ? s * fp : null);
-      put(row, 'q', okFp ? s * Math.sqrt(1 - fp * fp) : null);
+      put(row, 'smed', s, 3);
+      put(row, 'p', okFp ? s * fp : null, 3);
+      put(row, 'q', okFp ? s * Math.sqrt(1 - fp * fp) : null, 3);
     });
   }
 

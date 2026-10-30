@@ -85,6 +85,7 @@ Acta.Sheets = (function () {
   }
 
   function model(acta) {
+    M().recalcPruebas(acta);
     const v = id => M().get(acta, id) || '';
     const header = { actaNo: v('acta.numero'), fecha: v('acta.fecha'), horaIngreso: v('acta.horaIngreso'), horaSalida: v('acta.horaSalida') };
     return [1, 2].map(n => ({

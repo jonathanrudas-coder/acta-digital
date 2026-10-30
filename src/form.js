@@ -28,6 +28,7 @@ Acta.Form = (function () {
     let sink = updaters; // los controles registran su update aquí; las filas de listas usan su propio arreglo
     const pads = [];
     const datalists = {};
+    M().recalcPruebas(acta);
     root.innerHTML = '';
     const wrap = h('div', { class: 'f-wrap' });
     root.appendChild(wrap);
