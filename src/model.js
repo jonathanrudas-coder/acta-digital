@@ -55,21 +55,29 @@ Acta.Model = (function () {
     return a === null || b === null ? '' : formatNum(b - a);
   }
 
-  /* Pruebas del medidor: con V, I y FP de cada fila calcula Smed = k·V·I, P = Smed·FP y Q = Smed·sen θ.
-     k = √3 solo en la fila Total cuando el totalizador es de 3 fases; en lo demás k = 1. */
+  /* Pruebas del medidor: con V, I y FP de cada fase calcula Smed = V·I, P = Smed·FP y Q = Smed·sen θ.
+     La fila Total toma el promedio de V, I y FP de las fases con dato y usa k = √3 cuando el
+     totalizador es de 3 fases (k = 1 en los demás casos). */
   function recalcPruebas(acta) {
+    const T = 'pruebasFase', FASES = ['R', 'S', 'T'];
+    const put = (row, col, n) => {
+      const val = n === null ? '' : formatNum(n, 2);
+      if ((getCell(acta, T, row, col) || '') !== val) setCell(acta, T, row, col, val);
+    };
+    ['voltaje', 'corriente', 'fp'].forEach(col => {
+      const vals = FASES.map(r => parseNum(getCell(acta, T, r, col))).filter(n => n !== null);
+      put('Total', col, vals.length ? vals.reduce((x, y) => x + y, 0) / vals.length : null);
+    });
     const tri = String(get(acta, 'tot.fases') || '').trim() === '3';
-    ['R', 'S', 'T', 'Total'].forEach(row => {
-      const v = parseNum(getCell(acta, 'pruebasFase', row, 'voltaje'));
-      const i = parseNum(getCell(acta, 'pruebasFase', row, 'corriente'));
-      const fp = parseNum(getCell(acta, 'pruebasFase', row, 'fp'));
+    FASES.concat('Total').forEach(row => {
+      const v = parseNum(getCell(acta, T, row, 'voltaje'));
+      const i = parseNum(getCell(acta, T, row, 'corriente'));
+      const fp = parseNum(getCell(acta, T, row, 'fp'));
       const s = v === null || i === null ? null : (row === 'Total' && tri ? Math.sqrt(3) : 1) * v * i;
       const okFp = s !== null && fp !== null && fp >= 0 && fp <= 1;
-      const out = { smed: s, p: okFp ? s * fp : null, q: okFp ? s * Math.sqrt(1 - fp * fp) : null };
-      Object.keys(out).forEach(col => {
-        const val = out[col] === null ? '' : formatNum(out[col], 2);
-        if ((getCell(acta, 'pruebasFase', row, col) || '') !== val) setCell(acta, 'pruebasFase', row, col, val);
-      });
+      put(row, 'smed', s);
+      put(row, 'p', okFp ? s * fp : null);
+      put(row, 'q', okFp ? s * Math.sqrt(1 - fp * fp) : null);
     });
   }
 

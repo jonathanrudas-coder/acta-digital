@@ -198,7 +198,8 @@ Acta.Form = (function () {
     function gridField(field) {
       const box = h('div', { class: 'f-field f-grid', 'data-field': field.id }, [h('div', { class: 'o-sub', text: field.label })]);
       field.rows.forEach(row => {
-        const cells = field.columns.map(col => {
+        const cells = field.columns.map(c => {
+          const col = row === 'Total' && (field.calcTotal || []).indexOf(c.id) !== -1 ? Object.assign({}, c, { calc: true }) : c;
           const key = field.id + '.' + row + '.' + col.id, id = 'in-' + key.replace(/[^\w-]/g, '_');
           return labelled(col, control(col, cellAcc(field.id, row, col.id), id), id, key);
         });

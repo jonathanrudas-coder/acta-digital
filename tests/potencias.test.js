@@ -13,17 +13,29 @@ test('potencias: por fase sin √3 (S = V·I, P = S·FP, Q = S·sen θ)', () => 
   assert.equal(cell(a, 'R', 'p'), '960');
   assert.equal(cell(a, 'R', 'q'), '720');
 });
-test('potencias: el Total usa √3 solo si el totalizador es de 3 fases', () => {
+test('potencias: el Total promedia V, I y FP de las fases y usa √3 si es trifásico', () => {
   const a = Acta.Model.newActa(); Acta.Model.set(a, 'tot.fases', '3');
-  fill(a, 'Total', '208', '10', '1');
+  fill(a, 'R', '120', '10', '0,9'); fill(a, 'S', '122', '12', '0,8'); fill(a, 'T', '118', '11', '1');
   Acta.Model.recalcPruebas(a);
-  assert.equal(cell(a, 'Total', 'smed'), '3602,67');
-  assert.equal(cell(a, 'Total', 'p'), '3602,67');
-  assert.equal(cell(a, 'Total', 'q'), '0');
+  assert.equal(cell(a, 'Total', 'voltaje'), '120');
+  assert.equal(cell(a, 'Total', 'corriente'), '11');
+  assert.equal(cell(a, 'Total', 'fp'), '0,9');
+  assert.equal(cell(a, 'Total', 'smed'), '2286,31');   // √3 · 120 · 11
+  assert.equal(cell(a, 'Total', 'p'), '2057,68');
+  assert.equal(cell(a, 'Total', 'q'), '996,58');
   Acta.Model.set(a, 'tot.fases', '2'); Acta.Model.recalcPruebas(a);
-  assert.equal(cell(a, 'Total', 'smed'), '2080');
-  Acta.Model.set(a, 'tot.fases', ''); Acta.Model.recalcPruebas(a);
-  assert.equal(cell(a, 'Total', 'smed'), '2080');
+  assert.equal(cell(a, 'Total', 'smed'), '1320');
+});
+test('potencias: el Total promedia solo las fases con datos', () => {
+  const a = Acta.Model.newActa();
+  fill(a, 'R', '120', '10', '0,8');
+  Acta.Model.recalcPruebas(a);
+  assert.equal(cell(a, 'Total', 'voltaje'), '120');
+  assert.equal(cell(a, 'Total', 'smed'), '1200');
+  assert.equal(cell(a, 'Total', 'p'), '960');
+  fill(a, 'R', '', '', ''); Acta.Model.recalcPruebas(a);
+  assert.equal(cell(a, 'Total', 'voltaje'), '');
+  assert.equal(cell(a, 'Total', 'smed'), '');
 });
 test('potencias: datos incompletos o FP inválido dejan vacío', () => {
   const a = Acta.Model.newActa();
@@ -47,6 +59,9 @@ test('potencias: el formulario calcula al escribir y no deja editar P, Q, Smed',
   assert.ok(p.readOnly, 'P debe ser solo lectura');
   assert.equal(p.value, '960');
   assert.equal(host.querySelector('#in-pruebasFase_R_q').value, '720');
+  assert.ok(host.querySelector('#in-pruebasFase_Total_voltaje').readOnly, 'V del Total es calculado');
+  assert.ok(!host.querySelector('#in-pruebasFase_R_voltaje').readOnly);
+  assert.equal(host.querySelector('#in-pruebasFase_Total_voltaje').value, '120');
   f.destroy(); host.remove();
 });
 })();
